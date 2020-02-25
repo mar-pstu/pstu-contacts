@@ -1,0 +1,41 @@
+.settings-section {
+	margin-top: 1em;
+	margin-bottom: 1em;
+	padding-top: 1em;
+	padding-bottom: 1em;
+}
+
+.form-group {
+	margin-top: 1em;
+	margin-bottom: 1em;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: center;
+}
+
+.form-group .form-label {
+	display: block;
+	font-weight: bold;
+	margin-right: .5em;
+	width: 20em;
+}
+
+.form-group .form-control {
+	flex-grow: 1;
+}
+
+/*.center-block {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.text-center {
+	text-align: center;
+}
+
+.cursor-move {
+	cursor: move;
+}
+*/
