@@ -21,15 +21,15 @@ class SettingsSection {
 	protected $key;
 
 
-	public $label;
+	public $title;
 
 
 	protected $fields;
 
 
-	function __construct( $key, $label, $fields = array() ) {
+	function __construct( $key, $title, $fields = array() ) {
 		$this->key = $key;
-		$this->label = $label;
+		$this->title = $title;
 		$this->fields = ( is_array( $fields ) ) ? $fields : array();
 	}
 

@@ -26,6 +26,22 @@ class AdminContact extends Part {
 
 	use Helpers;
 
+
+	/**
+	 * Массив метаполей контакта
+	 * 
+	 * @since    2.0.0
+	 * @access   protected
+	 * @var      array    $meta_sections    Массив метаполей контакта
+	 */
+	protected $meta_sections;
+
+
+	function __construct( $slug, $textdomain ) {
+		parent::__construct( $slug, $textdomain );
+		$this->meta_sections = $this->get_contacts_meta_sections();
+	}
+
 	
 	/**
 	 * Добавляет дополнительные блоки (meta box) на страницы редактирования/создания постов
@@ -54,10 +70,21 @@ class AdminContact extends Part {
 	 * @var      array      $meta    Регистрационная информация о блоке
 	 */
 	public function render_metabox_content( $post, $meta ) {
-		wp_enqueue_media();
 		wp_nonce_field( "{$this->plugin_name}_meta", "{$this->plugin_name}_meta_nonce" );
-		foreach ( $this->get_contacts_meta_keys() as $section ) {
-			$meta = get_post_meta( $post->ID, $section->get_key(), true );
+		$this->render_metabox_section_foto( $post->ID );
+		$this->render_metabox_sections( $post->ID );
+	}
+
+
+	/**
+	 * Выводит секции "свойств" контакта ( адреса, социальные сети и прочее )
+	 *
+	 * @since    2.0.0
+	 * @var      int    $post_id    Идентификатор текущего поста
+	 */
+	protected function render_metabox_sections( $post_id ) {
+		foreach ( $this->meta_sections as $section ) {
+			$meta = get_post_meta( $post_id, $section->get_key(), true );
 			ob_start();
 			foreach ( $section->get_fields() as &$field ) {
 				if ( isset( $meta[ $field->get_key() ] ) ) {
@@ -74,10 +101,25 @@ class AdminContact extends Part {
 			}
 			$content = ob_get_contents();
 			ob_end_clean();
-			$label = $section->label;
+			$title = $section->title;
 			$key = $section->get_key();
 			include dirname( __FILE__ ) . '\partials\settings-section.php';
 		}
+	}
+
+
+	/**
+	 * Выводит секция для добавления фото контакта
+	 *
+	 * @since    2.0.0
+	 * @var      int    $post_id    Идентификатор текущего поста
+	 */
+	protected function render_metabox_section_foto( $post_id ) {
+		wp_enqueue_media();
+		$plugin_name = $this->plugin_name;
+		$default = plugin_dir_url( __FILE__ ) . 'images/frame.svg';
+		$value = get_post_meta( $post_id, "{$this->plugin_name}_foto", true );
+		include dirname( __FILE__ ) . '\partials\contact-section-foto.php';
 	}
 
 
@@ -145,7 +187,15 @@ class AdminContact extends Part {
 			wp_nonce_ays();
 			return;
 		}
-		foreach ( $this->get_contacts_meta_keys() as $section ) {
+		if ( isset( $_REQUEST[ "{$this->plugin_name}_foto" ] ) ) {
+			$foto = sanitize_url( trim( $_REQUEST[ "{$this->plugin_name}_foto" ] ) );
+			if ( empty( $foto ) ) {
+				delete_post_meta( $post_id, "{$this->plugin_name}_foto" );
+			} else {
+				update_post_meta( $post_id, "{$this->plugin_name}_foto", $foto );
+			}
+		}
+		foreach ( $this->meta_sections as $section ) {
 			$meta_value = array();
 			foreach ( $section->get_fields() as &$field ) {
 				if ( isset( $_REQUEST[ $section->get_key() ][ $field->get_key() ] ) ) {

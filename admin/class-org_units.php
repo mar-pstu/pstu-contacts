@@ -27,13 +27,67 @@ class AdminOrgUnits extends Part {
 
 
 	/**
+	 * Массив метаполей подразделения
+	 * 
+	 * @since    2.0.0
+	 * @access   protected
+	 * @var      array    $meta_sections    Массив метаполей контакта
+	 */
+	protected $meta_sections;
+
+
+	function __construct( $slug, $textdomain ) {
+		parent::__construct( $slug, $textdomain );
+		$this->meta_sections = $this->get_org_units_meta_sections();
+	}
+
+
+	/**
 	 * Сохранение произвольных полей таксономии
 	 *
 	 * @since    2.0.0
 	 * @param    int      $term_id         Идентификатор термина
 	 */
 	public function save_taxonomy_meta( $term_id ) {
-		//
+		// сохранение стандартных секций настроек
+		foreach ( $this->meta_sections as $section ) {
+			$meta_value = array();
+			foreach ( $section->get_fields() as &$field ) {
+				if ( isset( $_REQUEST[ $section->get_key() ][ $field->get_key() ] ) ) {
+					$new_value = $this->sanitize_field( $field->get_key(), $_REQUEST[ $section->get_key() ][ $field->get_key() ] );
+					if ( ! empty( $new_value ) ) {
+						$meta_value[ $field->get_key() ] = $new_value;
+					}
+				}
+			}
+			if ( empty( $meta_value ) ) {
+				delete_term_meta( $term_id, $section->get_key() );
+			} else {
+				update_term_meta( $term_id, $section->get_key(), $meta_value );
+			}
+		}
+		// сохранение порядка сортировки контактов в подразделении
+		$contacts = get_posts( array(
+			'numberposts' => -1,
+			'orderby'     => array(
+				'meta_value_num' => 'ACS',
+				'post_title'     => 'ACS',
+			),
+			'post_type'   => 'contact',
+			'meta_key'    => "org_units_{$term_id}_order",
+		) );
+		if ( is_array( $contacts ) && ! empty( $contacts ) ) {
+			foreach ( $contacts as $contact ) {
+				delete_post_meta( $contact->ID, "org_units_{$term_id}_order" );
+			}
+		}
+		if ( isset( $_POST[ $this->plugin_name . '_contacts_order' ] ) ) {
+			$order = wp_parse_id_list( $_POST[ $this->plugin_name . '_contacts_order' ] );
+			update_term_meta( $term_id, 'order_contacts', $order );
+			for ( $i = 0; $i < count( $order ); $i++ ) { 
+				update_post_meta( $order[ $i ], "org_units_{$term_id}_order", ( $i + 1 ) );
+			}
+		}
 	}
 
 
@@ -44,8 +98,27 @@ class AdminOrgUnits extends Part {
 	 * @var      string    $key      Идентификатор поля
 	 * @var      string    $value    Новое значение металополя
 	 */
-	protected function sanitize_field( $key, $new_value ) {
-		return $new_value;
+	protected function sanitize_field( $key, $value ) {
+		$value = trim( $value );
+		if ( ! empty( $value ) ) {
+			switch ( $field ) {
+				case 'leader':
+				case 'about_page_id':
+					$value = sanitize_key( $value );
+					break;
+				case 'email':
+					$value = implode( ", ", $this->parse_emails_list( $value ) );
+					break;
+				case 'tel':
+					$value = implode( ", ", $this->parse_list_of_telephone_numbers( $value ) );
+					break;
+				case 'address':
+				default:
+					$value = sanitize_text_field( $value );
+					break;
+			}
+		}
+		return $value;
 	}
 
 
@@ -56,24 +129,7 @@ class AdminOrgUnits extends Part {
 	 * @param    string    $taxonomy_slug   Идентификатор таксономии
 	 */
 	public function add_taxonomy_fields( $taxonomy_slug ) {
-		foreach ( $this->get_org_units_meta_keys() as $section ) {
-			ob_start();
-			foreach ( $section->get_fields() as &$field ) {
-				$label = $field->label;
-				$id = $this->plugin_name . '_' . $field->get_key();
-				$control = $this->render_input( $section->get_key() . '['. $field->get_key() . ']', 'text', array(
-					'value' => $field->value,
-					'class' => 'form-control',
-					'id'    => $id,
-				) );
-				include dirname( __FILE__ ) . '\partials\org_units-add-section-field.php';
-			}
-			$label = $section->label;
-			$key = $section->get_key();
-			$content = ob_get_contents();
-			ob_end_clean();
-			include dirname( __FILE__ ) . '\partials\settings-section.php';
-		}
+		$this->render_default_sections( false, dirname( __FILE__ ) . '\partials\settings-section.php', dirname( __FILE__ ) . '\partials\org_units-add-section-field.php' );
 	}
 
 
@@ -86,8 +142,63 @@ class AdminOrgUnits extends Part {
 	 * @param    string    $taxonomy         Идентификатор таксономии
 	 */
 	public function edit_taxonomy_fields( $term, $taxonomy ) {
-		foreach ( $this->get_org_units_meta_keys() as $section ) {
-			$meta = get_term_meta( $term->term_id, $section->get_key(), true );
+		$this->render_default_sections( $term->term_id, dirname( __FILE__ ) . '\partials\org_units-edit-settings-section.php', dirname( __FILE__ ) . '\partials\org_units-edit-section-field.php' );
+		// секция сортировок, появляется только при редактировании подразделения
+		ob_start();
+		$label = __( 'Сортировка контактов в подразделении', $this->plugin_name );
+		$id = $this->plugin_name . '_contacts_order';
+		$control = $this->render_order_control( $id, get_posts( array(
+			'numberposts' => -1,
+			'orderby'     => array(
+				'meta_exists_clause' => 'ASC',
+    			'meta_value_clause'  => 'DESC',
+			),
+			'post_type'   => 'contact',
+			'meta_query'  => array(
+				'relation'  => 'AND',
+				'meta_exists_clause' => array(
+					'key'      => "org_units_{$term->term_id}_order",
+					'compare'  => 'EXISTS',
+				),
+				'meta_value_clause' => array(
+					'key'      => "org_units_{$term->term_id}_order",
+					'type'     => 'numeric',
+				),
+			),
+			'tax_query'   => array(
+				'relation'  => 'AND',
+				array(
+					'taxonomy' => 'org_units',
+					'field'    => 'term_id',
+					'terms'    => $term->term_id,
+					'operator' => 'IN',
+				),
+			),
+		) ), array( 'id' => $id ) );
+		if ( empty( $control ) ) {
+			$control = __( 'Контакты не добавлены в подразделение', $this->plugin_name );
+		}
+		include dirname( __FILE__ ) . '\partials\org_units-edit-section-field.php';
+		$title = '';
+		$key = $this->plugin_name . '_orders';
+		$content = ob_get_contents();
+		ob_end_clean();
+		wp_add_inline_script( 'jquery-ui-sortable', "jQuery( document ).ready( function () { jQuery( '#{$id}' ).sortable(); } );", 'after' );
+		include dirname( __FILE__ ) . '\partials\org_units-edit-settings-section.php';
+	}
+
+
+	/**
+	 * Формирует секцию со "стандартными" параметрами подразделения
+	 * 
+	 * @since    2.0.0
+	 * @var      int       $term_id          Идентификатор подразделения
+	 * @var      string    $section_path     Путь к шаблону секции ( при добавлении и редактировании подразделения шаблоны разные )
+	 * @var      string    $field_path       Путь к шаблону секции ( при добавлении и редактировании подразделения шаблоны разные )
+	 */ 
+	protected function render_default_sections( $term_id, $section_path, $field_path ) {
+		foreach ( $this->meta_sections as $section ) {
+			$meta = ( ( bool ) $term_id ) ? get_term_meta( $term_id, $section->get_key(), true ) : array();
 			ob_start();
 			foreach ( $section->get_fields() as &$field ) {
 				if ( isset( $meta[ $field->get_key() ] ) ) {
@@ -95,20 +206,57 @@ class AdminOrgUnits extends Part {
 				}
 				$label = $field->label;
 				$id = $this->plugin_name . '_' . $field->get_key();
-				$control = $this->render_input( $section->get_key() . '['. $field->get_key() . ']', 'text', array(
-					'value' => $field->value,
-					'class' => 'form-control',
-					'id'    => $id,
-				) );
-				include dirname( __FILE__ ) . '\partials\org_units-edit-section-field.php';
+				$name = $section->get_key() . '['. $field->get_key() . ']';
+				$control = '';
+				if ( 'about_page_id' == $field->get_key() ) {
+					// выбор странциы с описанием
+					$control = $this->render_dropdown( $name, get_pages( array(
+						'sort_order'   => 'ASC',
+						'sort_column'  => 'post_title',
+					) ), array(
+						'id'               => $id,
+						'show_option_none' => '-',
+						'selected'         => $field->value
+					) );
+					if ( empty( $control ) ) {
+						$control = __( 'Страницы не созданиы', $this->plugin_name );
+					} else {
+						wp_add_inline_script( 'select2', "jQuery( document ).ready( function() { jQuery( '#{$id}' ).select2(); } );", 'after' );
+					}
+				} elseif ( 'leader_id' == $field->get_key() ) {
+					// выбор руководителя
+					$control = $this->render_dropdown( $name, get_posts( array(
+						'numberposts' => -1,
+						'post_type'   => 'contact',
+					) ), array(
+						'id'               => $id,
+						'show_option_none' => '-',
+						'selected'         => $field->value,
+					) );
+					if ( empty( $control ) ) {
+						$control = __( 'Контакты не добавлены в подразделение', $this->plugin_name );
+					} else {
+						wp_add_inline_script( 'select2', "jQuery( document ).ready( function() { jQuery( '#{$id}' ).select2(); } );", 'after' );
+					}
+				} else {
+					// стандартный тектовые поля
+					$control = $this->render_input( $name, 'text', array(
+						'value' => $field->value,
+						'class' => 'form-control',
+						'id'    => $id,
+					) );
+				}
+				include $field_path;
 			}
-			$label = $section->label;
+			// переменные секции
+			$title = $section->title;
 			$key = $section->get_key();
 			$content = ob_get_contents();
 			ob_end_clean();
-			include dirname( __FILE__ ) . '\partials\org_units-edit-settings-section.php';
+			include $section_path;
 		}
 	}
+
 
 
 	/**
@@ -117,6 +265,7 @@ class AdminOrgUnits extends Part {
 	 * @since    2.0.0
 	 */
 	public function enqueue_styles() {
+		wp_enqueue_style( 'jquery-ui' );
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/admin.css', array(), $this->version, 'all' );
 		wp_enqueue_style( 'select2', plugin_dir_url( __FILE__ ) . 'css/select2.css', array(), '4.0.13', 'all' );
 	}
@@ -128,6 +277,7 @@ class AdminOrgUnits extends Part {
 	 * @since    2.0.0
 	 */
 	public function enqueue_scripts() {
+		wp_enqueue_script( 'jquery-ui-sortable' );
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/admin.js', array( 'jquery' ), $this->version, false );
 		wp_enqueue_script( 'select2', plugin_dir_url( __FILE__ ) . 'js/select2.js', array( 'jquery' ), '4.0.13', false );
 	}

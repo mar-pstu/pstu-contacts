@@ -8,9 +8,12 @@ if ( ! defined( 'ABSPATH' ) ) {	exit; };
 
 </table>
 
-<h3>
-	<?php echo $label; ?>
-</h3>
+
+<?php if ( ! empty( $title ) ) : ?>
+	<h3>
+		<?php echo $title; ?>
+	</h3>
+<?php endif; ?>
 
 <table class="form-table <?php echo esc_attr( $key ); ?>" role="presentation"  id="<?php echo esc_attr( $key ); ?>">
 

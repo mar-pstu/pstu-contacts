@@ -19,15 +19,24 @@ class Field {
 	public $value;
 
 
-	function __construct( $key, $label, $value = '' ) {
+	protected $required;
+
+
+	function __construct( $key, $label, $value, $required ) {
 		$this->key = $key;
 		$this->label = $label;
 		$this->value = $value;
+		$this->required = ( bool ) $required;
 	}
 
 
 	public function get_key() {
 		return $this->key;
+	}
+
+
+	public function is_required() {
+		return $this->required;
 	}
 
 
