@@ -23,6 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {	exit; };
  */
 class Manager {
 
+
 	/**
 	 * The loader that's responsible for maintaining and registering all hooks that power
 	 * the plugin.
@@ -33,6 +34,7 @@ class Manager {
 	 */
 	protected $loader;
 
+
 	/**
 	 * The unique identifier of this plugin.
 	 *
@@ -41,6 +43,7 @@ class Manager {
 	 * @var      string    $plugin_name    The string used to uniquely identify this plugin.
 	 */
 	protected $plugin_name;
+
 
 	/**
 	 * The current version of the plugin.
@@ -53,16 +56,6 @@ class Manager {
 
 
 	/**
-	 * Уникальный идентификатор для получения строки перевода.
-	 *
-	 * @since    2.0.0
-	 * @access   protected
-	 * @var      string    $version    The current version of the plugin.
-	 */
-	protected $textdomain;	
-
-
-	/**
 	 * Define the core functionality of the plugin.
 	 *
 	 * Set the plugin name and the plugin version that can be used throughout the plugin.
@@ -72,22 +65,16 @@ class Manager {
 	 * @since    2.0.0
 	 */
 	public function __construct() {
-		if ( defined( 'PSTU_CONTACTS_VERSION' ) ) {
-			$this->version = PSTU_CONTACTS_VERSION;
-		} else {
-			$this->version = '2.0.0';
-		}
-		$this->plugin_name = 'pstu_contacts';
-		$this->textdomain = 'pstu-contacts';
+		$this->version = ( defined( 'PSTU_CONTACTS_VERSION' ) ) ? PSTU_CONTACTS_VERSION : '2.0.0';
+		$this->plugin_name =  ( defined( 'PSTU_CONTACTS_PLUGIN_NAME' ) ) ? PSTU_CONTACTS_PLUGIN_NAME : 'pstu_contacts';
 		$this->load_dependencies();
 		$this->set_locale();
-		$this->register_objects();
+		$this->init();
 		if ( is_admin() ) {
 			$this->define_admin_hooks();
 		} else {
 			$this->define_public_hooks();
 		}
-
 	}
 
 	/**
@@ -112,17 +99,13 @@ class Manager {
 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/trait-controls.php';
 
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/trait-contacts.php';
-
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/trait-org_units.php';
-
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/abstract-part.php';
 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-field.php';
 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-settings-section.php';
 
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-register-objects.php';		
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-init.php';		
 
 		/**
 		 * The class responsible for orchestrating the actions and filters of the
@@ -139,15 +122,19 @@ class Manager {
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-org_units.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-admin-settings-page.php';
+
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-admin-org_units.php';
 		
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-contact.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-admin-contact.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
-		// require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-public.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-public-contact.php';
+
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-public-org_units.php';
 
 		$this->loader = new Loader();
 
@@ -175,10 +162,11 @@ class Manager {
 	 * @since    2.0.0
 	 * @access   private
 	 */
-	private function register_objects() {
-		$plugin_register_objects = new Register_Objects( $this->get_plugin_name(), $this->get_version() );
+	private function init() {
+		$plugin_register_objects = new Init( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'init', $plugin_register_objects, 'register_post_types' );
 		$this->loader->add_action( 'init', $plugin_register_objects, 'register_taxonomies' );
+		$this->loader->add_filter( 'pstu_contacts_get_meta_sections', $plugin_register_objects, 'get_meta_sections', 10, 1 );
 	}
 
 
@@ -190,7 +178,6 @@ class Manager {
 	 * @access   private
 	 */
 	private function define_admin_hooks() {
-		$part_admin_contact = new AdminContact( $this->get_plugin_name(), $this->get_version() );
 		$part_admin_org_units = new AdminOrgUnits( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'create_org_units', $part_admin_org_units, 'save_taxonomy_meta' );
 		$this->loader->add_action( 'edited_org_units', $part_admin_org_units, 'save_taxonomy_meta' );
@@ -198,10 +185,14 @@ class Manager {
 		$this->loader->add_action( 'org_units_edit_form_fields', $part_admin_org_units, 'edit_taxonomy_fields', 10, 2 );
 		$this->loader->add_action( 'admin_enqueue_scripts', $part_admin_org_units, 'enqueue_styles', 10, 0 );
 		$this->loader->add_action( 'admin_enqueue_scripts', $part_admin_org_units, 'enqueue_scripts', 10, 0 );
+		$part_admin_contact = new AdminContact( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'add_meta_boxes', $part_admin_contact, 'add_meta_boxes' );
 		$this->loader->add_action( 'save_post', $part_admin_contact, 'save_post', 10, 1 );
 		$this->loader->add_action( 'admin_enqueue_scripts', $part_admin_contact, 'enqueue_styles', 10, 0 );
 		$this->loader->add_action( 'admin_enqueue_scripts', $part_admin_contact, 'enqueue_scripts', 10, 0 );
+		$part_settings_page = new SettingsPage( $this->get_plugin_name(), $this->get_version() );
+		$this->loader->add_action( 'admin_menu', $part_settings_page, 'add_page', 10, 0 );
+		$this->loader->add_action( 'admin_init', $part_settings_page, 'register_settings', 10, 0 );
 	}
 
 
@@ -213,12 +204,18 @@ class Manager {
 	 * @access   private
 	 */
 	private function define_public_hooks() {
-
-		// $plugin_public = new Pstu_contacts_Public( $this->get_plugin_name(), $this->get_version() );
-
-		// $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-		// $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-
+		$part_public_contact = new PublicContact( $this->get_plugin_name(), $this->get_version() );
+		$this->loader->add_action( 'wp_enqueue_scripts', $part_public_contact, 'enqueue_styles', 10, 0 );
+		$this->loader->add_action( 'wp_enqueue_scripts', $part_public_contact, 'enqueue_scripts', 10, 0 );
+		$this->loader->add_action( 'pstu_contacts_single_profil_foto', $part_public_contact, 'the_contact_profil_foto', 10, 1 );
+		$this->loader->add_action( 'pstu_contacts_the_single_contact_info', $part_public_contact, 'render_meta_section', 10, 3 );
+		$this->loader->add_filter( 'the_content', $part_public_contact, 'render_single_content', 10, 1 );
+		$part_public_org_units = new PublicOrgUnits( $this->get_plugin_name(), $this->get_version() );
+		$this->loader->add_action( 'wp_enqueue_scripts', $part_public_org_units, 'enqueue_styles', 10, 0 );
+		$this->loader->add_action( 'wp_enqueue_scripts', $part_public_org_units, 'enqueue_scripts', 10, 0 );
+		$this->loader->add_action( 'pre_get_posts', $part_public_org_units, 'change_order', 10, 1 );
+		$this->loader->add_action( 'pstu_contacts_the_single_org_units_info', $part_public_contact, 'render_meta_section', 10, 3 );
+		$this->loader->add_filter( 'template_include', $part_public_org_units, 'archive_template_include', 10, 1 );
 	}
 
 

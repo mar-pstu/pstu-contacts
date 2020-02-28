@@ -2,17 +2,19 @@
 
 	'use strict';
 
-	if ( jQuery( '#photo-selection-section' ).length > 0 ) {
+	jQuery( document ).ready( function () {
 
-		jQuery( document ).ready( function () {
-			var $button_add = jQuery( '#add-foto' ),
-				$button_remove = jQuery( '#remove-foto' ),
-				$foto = jQuery( '#foto-image' ),
-				$control = jQuery( '#foto-control' ),
-				$figure = jQuery( '#foto-figure' ),
-				default_image = $control.attr( 'data-default' );
+		jQuery( '.photo-selection-control' ).each( function ( index, element ) {
 
-			console.log( default_image );
+			var $container = jQuery( element ),
+				$button_add = $container.find( '.add-foto' ),
+				$button_remove = $container.find( '.remove-foto' ),
+				$foto = $container.find( '.foto-image' ),
+				$control = $container.find( '.foto-control' ),
+				$figure = $container.find( '.foto-figure' ),
+				default_image = $container.attr( 'data-default' );
+
+			console.log( $container );
 
 			function check_default() {
 				var value = $control.val();
@@ -56,6 +58,6 @@
 
 		} );
 
-	}
+	} );
 
 } )( jQuery );

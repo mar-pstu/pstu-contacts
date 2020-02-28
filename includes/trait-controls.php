@@ -93,4 +93,33 @@ trait Controls {
 	}
 
 
+	function render_photo_selection_control( $name, $args = array() ) {
+		$args = array_merge( array(
+			'id'                => $name,
+			'echo'              => false,
+			'default'           => '',
+			'value'             => '',
+			'description'       => '',
+		), $args );
+		ob_start();
+		?>
+			<div class="photo-selection-control" data-default="<?php echo esc_attr( $args[ 'default' ] ); ?>">
+				<input type="hidden" class="foto-control" id="<?php echo $args[ 'id' ]; ?>" name="<?php echo $name; ?>" value="<?php echo $args[ 'value' ]; ?>">
+				<figure class="foto-figure add-foto"><img class="foto-image" src="<?php echo ( empty( $args[ 'value' ] ) ) ? $args[ 'default' ] : $args[ 'value' ]; ?>" alt=""></figure>
+				<?php echo $args[ 'description' ]; ?>
+				<p>
+					<button class="button button-primary add-foto" type="button"><?php _e( 'Выбор фото', $this->plugin_name ); ?></button>
+					<button class="button remove-foto" type="button"><?php _e( 'Удалить фото', $this->plugin_name ); ?></button>
+				</p>
+			</div>
+		<?php
+		$html = ob_get_contents();
+		ob_end_clean();
+		if ( $args[ 'echo' ] ) {
+			echo $html;
+		}
+		return $html;
+	}
+
+
 }

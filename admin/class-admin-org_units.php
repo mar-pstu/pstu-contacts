@@ -17,29 +17,10 @@ namespace pstu_contacts;
 class AdminOrgUnits extends Part {
 
 
-	use OrgUnits;
-
-
 	use Controls;
 
 
 	use Helpers;
-
-
-	/**
-	 * Массив метаполей подразделения
-	 * 
-	 * @since    2.0.0
-	 * @access   protected
-	 * @var      array    $meta_sections    Массив метаполей контакта
-	 */
-	protected $meta_sections;
-
-
-	function __construct( $slug, $textdomain ) {
-		parent::__construct( $slug, $textdomain );
-		$this->meta_sections = $this->get_org_units_meta_sections();
-	}
 
 
 	/**
@@ -50,7 +31,7 @@ class AdminOrgUnits extends Part {
 	 */
 	public function save_taxonomy_meta( $term_id ) {
 		// сохранение стандартных секций настроек
-		foreach ( $this->meta_sections as $section ) {
+		foreach ( apply_filters( 'pstu_contacts_get_meta_sections', 'org_units' ) as $section ) {
 			$meta_value = array();
 			foreach ( $section->get_fields() as &$field ) {
 				if ( isset( $_REQUEST[ $section->get_key() ][ $field->get_key() ] ) ) {
@@ -197,7 +178,7 @@ class AdminOrgUnits extends Part {
 	 * @var      string    $field_path       Путь к шаблону секции ( при добавлении и редактировании подразделения шаблоны разные )
 	 */ 
 	protected function render_default_sections( $term_id, $section_path, $field_path ) {
-		foreach ( $this->meta_sections as $section ) {
+		foreach ( apply_filters( 'pstu_contacts_get_meta_sections', 'org_units' ) as $section ) {
 			$meta = ( ( bool ) $term_id ) ? get_term_meta( $term_id, $section->get_key(), true ) : array();
 			ob_start();
 			foreach ( $section->get_fields() as &$field ) {

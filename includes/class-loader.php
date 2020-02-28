@@ -20,6 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {	exit; };
  */
 class Loader {
 
+
 	/**
 	 * The array of actions registered with WordPress.
 	 *
@@ -28,6 +29,7 @@ class Loader {
 	 * @var      array    $actions    The actions registered with WordPress to fire when the plugin loads.
 	 */
 	protected $actions;
+
 
 	/**
 	 * The array of filters registered with WordPress.
@@ -38,6 +40,17 @@ class Loader {
 	 */
 	protected $filters;
 
+
+	/**
+	 * Массив шорткодов
+	 *
+	 * @since    2.0.0
+	 * @access   protected
+	 * @var      array    $shortcode    Массиыв зарегистрированных шорткодов
+	 */
+	protected $shortcodes ;
+
+
 	/**
 	 * Initialize the collections used to maintain the actions and filters.
 	 *
@@ -47,8 +60,10 @@ class Loader {
 
 		$this->actions = array();
 		$this->filters = array();
+		$this->shortcodes = array();
 
 	}
+
 
 	/**
 	 * Add a new action to the collection to be registered with WordPress.
@@ -64,6 +79,7 @@ class Loader {
 		$this->actions = $this->add( $this->actions, $hook, $component, $callback, $priority, $accepted_args );
 	}
 
+
 	/**
 	 * Add a new filter to the collection to be registered with WordPress.
 	 *
@@ -77,6 +93,20 @@ class Loader {
 	public function add_filter( $hook, $component, $callback, $priority = 10, $accepted_args = 1 ) {
 		$this->filters = $this->add( $this->filters, $hook, $component, $callback, $priority, $accepted_args );
 	}
+
+
+	/**
+	 * Добавляет новый шорткод в массив для регистрации в Wordpress
+	 *
+	 * @since    2.0.0
+	 * @param    string               $hook             Имя фильтра WordPress, который регистрируется.
+	 * @param    object               $component        Ссылка на экземпляр объекта, для которого определен фильтр.
+	 * @param    string               $callback         Имя метода в $component.
+	 */
+	public function add_shortcode( $hook, $component, $callback ) {
+		$this->shortcodes = $this->add( $this->shortcodes, $hook, $component, $callback, null, null );
+	}
+
 
 	/**
 	 * A utility function that is used to register the actions and hooks into a single
@@ -114,11 +144,15 @@ class Loader {
 	public function run() {
 
 		foreach ( $this->filters as $hook ) {
-			add_filter( $hook['hook'], array( $hook['component'], $hook['callback'] ), $hook['priority'], $hook['accepted_args'] );
+			add_filter( $hook[ 'hook' ], array( $hook[ 'component' ], $hook[ 'callback' ] ), $hook[ 'priority' ], $hook[ 'accepted_args' ] );
 		}
 
 		foreach ( $this->actions as $hook ) {
-			add_action( $hook['hook'], array( $hook['component'], $hook['callback'] ), $hook['priority'], $hook['accepted_args'] );
+			add_action( $hook[ 'hook' ], array( $hook[ 'component' ], $hook[ 'callback' ] ), $hook[ 'priority' ], $hook[ 'accepted_args' ] );
+		}
+
+		foreach ( $this->shortcodes as $hook ) {
+			add_shortcode( $hook[ 'hook' ], array( $hook[ 'component' ], $hook[ 'callback' ] ) );
 		}
 
 	}

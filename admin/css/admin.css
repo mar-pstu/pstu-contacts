@@ -26,13 +26,17 @@
 	flex-grow: 1;
 }
 
-.settings-section .foto-figure {
+.photo-selection-control {
+	display: flex;
+}
+
+.photo-selection-control .foto-figure {
 	flex-shrink: 0;
-	width: 20em;
+	width: 10em;
 	margin: .5em 2em .5em .5em;
 }
 
-.settings-section .foto-image {
+.photo-selection-control .foto-image {
 	display: block;
 	width: 100%;
 	height: auto;

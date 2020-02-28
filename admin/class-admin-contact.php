@@ -20,27 +20,10 @@ if ( ! defined( 'ABSPATH' ) ) {	exit; };
 class AdminContact extends Part {
 
 
-	use Contacts;
-
 	use Controls;
 
+
 	use Helpers;
-
-
-	/**
-	 * Массив метаполей контакта
-	 * 
-	 * @since    2.0.0
-	 * @access   protected
-	 * @var      array    $meta_sections    Массив метаполей контакта
-	 */
-	protected $meta_sections;
-
-
-	function __construct( $slug, $textdomain ) {
-		parent::__construct( $slug, $textdomain );
-		$this->meta_sections = $this->get_contacts_meta_sections();
-	}
 
 	
 	/**
@@ -71,20 +54,8 @@ class AdminContact extends Part {
 	 */
 	public function render_metabox_content( $post, $meta ) {
 		wp_nonce_field( "{$this->plugin_name}_meta", "{$this->plugin_name}_meta_nonce" );
-		$this->render_metabox_section_foto( $post->ID );
-		$this->render_metabox_sections( $post->ID );
-	}
-
-
-	/**
-	 * Выводит секции "свойств" контакта ( адреса, социальные сети и прочее )
-	 *
-	 * @since    2.0.0
-	 * @var      int    $post_id    Идентификатор текущего поста
-	 */
-	protected function render_metabox_sections( $post_id ) {
-		foreach ( $this->meta_sections as $section ) {
-			$meta = get_post_meta( $post_id, $section->get_key(), true );
+		foreach ( apply_filters( 'pstu_contacts_get_meta_sections', 'contact' ) as $section ) {
+			$meta = get_post_meta( $post->ID, $section->get_key(), true );
 			ob_start();
 			foreach ( $section->get_fields() as &$field ) {
 				if ( isset( $meta[ $field->get_key() ] ) ) {
@@ -92,11 +63,21 @@ class AdminContact extends Part {
 				}
 				$label = $field->label;
 				$id = $this->plugin_name . '_' . $field->get_key();
-				$control = $this->render_input( $section->get_key() . '['. $field->get_key() . ']', 'text', array(
-					'value' => $field->value,
-					'class' => 'form-control',
-					'id'    => $id,
-				) );
+				$name = $section->get_key() . '['. $field->get_key() . ']';
+				if ( in_array( $field->get_key(), array( 'profil_foto' ) ) ) {
+					$control = $this->render_photo_selection_control( $name, array(
+						'value'    => $field->value,
+						'class'    => 'form-control',
+						'id'       => $id,
+						'default'  => plugin_dir_url( __FILE__ ) . 'images/frame.svg'
+					) );
+				} else {
+					$control = $this->render_input( $name, 'text', array(
+						'value'    => $field->value,
+						'class'    => 'form-control',
+						'id'       => $id,
+					) );
+				}
 				include dirname( __FILE__ ) . '\partials\contact-section-field.php';
 			}
 			$content = ob_get_contents();
@@ -130,9 +111,9 @@ class AdminContact extends Part {
 	 * @var      string    $key      Идентификатор поля
 	 * @var      string    $value    Новое значение металополя
 	 */
-	protected function sanitize_field( $key, $new_value ) {
-		$new_value = trim( $new_value );
-		if ( ! empty( $new_value ) ) {
+	protected function sanitize_field( $key, $value ) {
+		$value = trim( $value );
+		if ( ! empty( $value ) ) {
 			switch ( $key ) {
 				// scientometrics - возможно будут ID, но сейчас пока эти поля очень и очень редко заполняются
 				case 'orcid_id':
@@ -150,23 +131,26 @@ class AdminContact extends Part {
 				case 'instagram':
 				// web
 				case 'wikipedia':
-					$new_value = implode( ", ", wp_extract_urls( $new_value ) );
+					$value = implode( ", ", wp_extract_urls( $value ) );
 					break;
 				case 'email':
-					$new_value = implode( ", ", $this->parse_emails_list( $new_value ) );
+					$value = implode( ", ", $this->parse_emails_list( $value ) );
 					break;
 				case 'tel':
-					$new_value = implode( ", ", $this->parse_list_of_telephone_numbers( $new_value ) );
+					$value = implode( ", ", $this->parse_list_of_telephone_numbers( $value ) );
+					break;
+				case 'profil_foto':
+					$value = esc_url_raw( $value );
 					break;
 				case 'address':
 				case 'time':
 				case 'schedule_admission':
 				default:
-					$new_value = sanitize_text_field( $new_value );
+					$value = sanitize_text_field( $value );
 					break;
 			}
 		}
-		return $new_value;
+		return $value;
 	}
 
 
