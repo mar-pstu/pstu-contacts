@@ -115,7 +115,7 @@ class Init {
 			'show_in_nav_menus'     => true,
 			'show_ui'               => true,
 			'show_tagcloud'         => true,
-			'show_in_rest'          => null,
+			'show_in_rest'          => true,
 			'rest_base'             => null,
 			'hierarchical'          => true,
 			'update_count_callback' => '',

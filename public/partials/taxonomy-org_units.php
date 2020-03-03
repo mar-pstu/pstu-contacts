@@ -7,6 +7,9 @@ namespace pstu_contacts;
 if ( ! defined( 'ABSPATH' ) ) {	exit; };
 
 
+global $post;
+
+
 get_header();
 
 
@@ -18,6 +21,12 @@ $child_our_units = get_terms( array(
 	'parent'     => $queried_object->term_id,
 ) );
 
+$general_information = array_merge( array(
+	'leader_id',
+	'about_page_id',
+), get_term_meta( $queried_object->term_id, 'general_information', true ) );
+
+$leader = get_post( $general_information[ 'leader_id' ], OBJECT, 'raw' );
 
 ?>
 
@@ -26,9 +35,30 @@ $child_our_units = get_terms( array(
 	
 	<h1><?php single_term_title( '', true ); ?></h1>
 
-	<?php
+	<div class="row">
+		
+		<div class="col-xs-12 col-sm">
+			<?php do_action( 'pstu_contacts_the_single_org_units_info', $queried_object->term_id, 'contacts', 'p' ); ?>
+			<?php if ( ! empty( $general_information[ 'about_page_id' ] ) ) : ?>
+				<p class="small">
+					<a class="btn btn-primary" href="<?php echo get_permalink( $general_information[ 'about_page_id' ], false ); ?>">
+						<?php _e( 'Страница с подробной информацией о работе подразделения', PSTU_CONTACTS_PLUGIN_NAME ); ?>
+					</a>
+				</p>
+			<?php endif; ?>
+		</div>
 
-		do_action( 'pstu_contacts_the_single_org_units_info', $queried_object->term_id, 'contacts', 'h2' );
+		<?php if ( ! is_wp_error( $leader ) ) : setup_postdata( $post = $leader ); ?>
+			<div class="col-xs-12 col-sm-4 first-sm">
+				<a id="post-<?php the_ID(); ?>" href="<?php the_permalink(); ?>" id="post-<?php the_ID(); ?>" <?php post_class( 'person-entry person-entry--card', get_the_ID() ); ?> >
+					<?php do_action( 'pstu_contact_profil_foto', get_the_ID() ); ?>
+				</a>
+			</div>
+		<?php endif; wp_reset_postdata(); ?>
+
+	</div>
+
+	<?php
 
 		echo do_shortcode( term_description() );
 
@@ -56,7 +86,9 @@ $child_our_units = get_terms( array(
 
 			while ( have_posts() ) {
 				the_post();
-				include dirname( __FILE__ ) . '\contact-bar.php';
+				if ( get_the_ID() != $general_information[ 'leader_id' ] ) {
+					include dirname( __FILE__ ) . '\contact-bar.php';
+				}
 			}
 		}
 

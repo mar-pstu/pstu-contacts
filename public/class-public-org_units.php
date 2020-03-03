@@ -31,29 +31,28 @@ class PublicOrgUnits extends Part {
 	}
 
 
-	public function render_meta_section( $post_id, $key, $header_tag = 'h3' ) {
+	public static function render_meta_section( $term_id, $key, $header_tag = 'h3' ) {
 		foreach ( apply_filters( 'pstu_contacts_get_meta_sections', 'org_units' ) as $section ) {
 			if ( $section->get_key() != $key ) {
 				continue;
 			}
 			$content = '';
-			$meta = get_post_meta( $post_id, $key, true );
+			$meta = get_term_meta( $term_id, $key, true );
 			foreach ( $section->get_fields() as $field ) {
 				if ( ( isset( $meta[ $field->get_key() ] ) ) && ! empty( $meta[ $field->get_key() ] ) ) {
 					$content .= '<li>' . $field->label . ': ' . $meta[ $field->get_key() ] . '</li>';
 				}
 			}
 			if ( ! empty( $content ) ) {
+				$header = sprintf( '<%1$s>%2$s</%1$s>', $header_tag, $section->title );
 				printf(
-					'<section id="post-%1$s-%2$s" class="%2$s"> <%3$s> %4$s </%3$s> <ul>%4$s</ul> </section>',
-					$post_id,
+					'<section id="post-%1$s-%2$s" class="%2$s">%3$s<ul>%4$s</ul></section>',
+					$term_id,
 					$key,
-					$header_tag,
-					$section->title,
+					$header,
 					$content
 				);
 			}
-
 		}
 	}
 
@@ -86,7 +85,23 @@ class PublicOrgUnits extends Part {
 	 * @var      WP_Query   $query     Объект запроса, передаётся по ссылке
 	 */
 	public function change_order( $query ) {
-
+		if ( isset( $query->queried_object->taxonomy ) && 'org_units' ==  $query->queried_object->taxonomy ) {
+			$query->set( 'orderby', array(
+				'meta_exists_clause' => 'ASC',
+				'meta_value_clause'  => 'DESC',
+			) );
+			$query->set( 'meta_query', array(
+				'relation'  => 'AND',
+				'meta_exists_clause' => array(
+					'key'      => "org_units_{$query->queried_object->term_id}_order",
+					'compare'  => 'EXISTS',
+				),
+				'meta_value_clause' => array(
+					'key'      => "org_units_{$query->queried_object->term_id}_order",
+					'type'     => 'numeric',
+				),
+			) );
+		}
 	}
 
 

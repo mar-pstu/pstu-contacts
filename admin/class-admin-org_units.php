@@ -132,7 +132,7 @@ class AdminOrgUnits extends Part {
 			'numberposts' => -1,
 			'orderby'     => array(
 				'meta_exists_clause' => 'ASC',
-    			'meta_value_clause'  => 'DESC',
+				'meta_value_clause'  => 'DESC',
 			),
 			'post_type'   => 'contact',
 			'meta_query'  => array(

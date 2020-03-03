@@ -101,6 +101,8 @@ class Manager {
 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/abstract-part.php';
 
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/abstract-shortcode.php';
+
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-field.php';
 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-settings-section.php';
@@ -128,6 +130,8 @@ class Manager {
 		
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-admin-contact.php';
 
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-admin-gutenberg.php';
+
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
@@ -135,6 +139,18 @@ class Manager {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-public-contact.php';
 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-public-org_units.php';
+
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-shortcode-org_unit.php';
+
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-shortcode-leader.php';
+
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-shortcode-contact.php';
+
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-shortcode-org_unit-description.php';
+
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-shortcode-org_unit-contacts-info.php';
+
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-shortcode-person-contact-info.php';
 
 		$this->loader = new Loader();
 
@@ -178,6 +194,7 @@ class Manager {
 	 * @access   private
 	 */
 	private function define_admin_hooks() {
+		
 		$part_admin_org_units = new AdminOrgUnits( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'create_org_units', $part_admin_org_units, 'save_taxonomy_meta' );
 		$this->loader->add_action( 'edited_org_units', $part_admin_org_units, 'save_taxonomy_meta' );
@@ -185,14 +202,20 @@ class Manager {
 		$this->loader->add_action( 'org_units_edit_form_fields', $part_admin_org_units, 'edit_taxonomy_fields', 10, 2 );
 		$this->loader->add_action( 'admin_enqueue_scripts', $part_admin_org_units, 'enqueue_styles', 10, 0 );
 		$this->loader->add_action( 'admin_enqueue_scripts', $part_admin_org_units, 'enqueue_scripts', 10, 0 );
+		
 		$part_admin_contact = new AdminContact( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'add_meta_boxes', $part_admin_contact, 'add_meta_boxes' );
 		$this->loader->add_action( 'save_post', $part_admin_contact, 'save_post', 10, 1 );
 		$this->loader->add_action( 'admin_enqueue_scripts', $part_admin_contact, 'enqueue_styles', 10, 0 );
 		$this->loader->add_action( 'admin_enqueue_scripts', $part_admin_contact, 'enqueue_scripts', 10, 0 );
+		
 		$part_settings_page = new SettingsPage( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'admin_menu', $part_settings_page, 'add_page', 10, 0 );
 		$this->loader->add_action( 'admin_init', $part_settings_page, 'register_settings', 10, 0 );
+		
+		$part_settings_page = new AdminGutenberg( $this->get_plugin_name(), $this->get_version() );
+		$this->loader->add_action( 'init', $part_settings_page, 'register_blocks', 10, 0 );
+		$this->loader->add_action( 'enqueue_block_assets', $part_settings_page, 'enqueue_block_assets', 10, 0 );
 	}
 
 
@@ -204,18 +227,39 @@ class Manager {
 	 * @access   private
 	 */
 	private function define_public_hooks() {
+		
 		$part_public_contact = new PublicContact( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'wp_enqueue_scripts', $part_public_contact, 'enqueue_styles', 10, 0 );
 		$this->loader->add_action( 'wp_enqueue_scripts', $part_public_contact, 'enqueue_scripts', 10, 0 );
 		$this->loader->add_action( 'pstu_contacts_single_profil_foto', $part_public_contact, 'the_contact_profil_foto', 10, 1 );
 		$this->loader->add_action( 'pstu_contacts_the_single_contact_info', $part_public_contact, 'render_meta_section', 10, 3 );
 		$this->loader->add_filter( 'the_content', $part_public_contact, 'render_single_content', 10, 1 );
+		
 		$part_public_org_units = new PublicOrgUnits( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'wp_enqueue_scripts', $part_public_org_units, 'enqueue_styles', 10, 0 );
 		$this->loader->add_action( 'wp_enqueue_scripts', $part_public_org_units, 'enqueue_scripts', 10, 0 );
 		$this->loader->add_action( 'pre_get_posts', $part_public_org_units, 'change_order', 10, 1 );
-		$this->loader->add_action( 'pstu_contacts_the_single_org_units_info', $part_public_contact, 'render_meta_section', 10, 3 );
+		$this->loader->add_action( 'pstu_contacts_the_single_org_units_info', $part_public_org_units, 'render_meta_section', 10, 3 );
+		$this->loader->add_action( 'pstu_contact_profil_foto', $part_public_contact, 'the_contact_profil_foto', 10, 1 );
 		$this->loader->add_filter( 'template_include', $part_public_org_units, 'archive_template_include', 10, 1 );
+		
+		$part_public_shortcode_org_unit = new PublicShortcodeOrgUnit( 'pstu_org_unit', $this->get_plugin_name(), $this->get_version() );
+		$this->loader->add_shortcode( $part_public_shortcode_org_unit->get_name(), $part_public_shortcode_org_unit, 'manager' );
+		
+		$part_public_shortcode_leader = new PublicShortcodeOrgUnitLeader( 'pstu_org_unit_leader', $this->get_plugin_name(), $this->get_version() );
+		$this->loader->add_shortcode( $part_public_shortcode_leader->get_name(), $part_public_shortcode_leader, 'manager' );
+		
+		$part_public_shortcode_contact = new PublicShortcodeContact( 'pstu_contact', $this->get_plugin_name(), $this->get_version() );
+		$this->loader->add_shortcode( $part_public_shortcode_contact->get_name(), $part_public_shortcode_contact, 'manager' );
+		
+		$part_public_shortcode_org_unit_description = new PublicShortcodeOrgUnitDescription( 'pstu_org_unit_description', $this->get_plugin_name(), $this->get_version() );
+		$this->loader->add_shortcode( $part_public_shortcode_org_unit_description->get_name(), $part_public_shortcode_org_unit_description, 'manager' );
+
+		$part_public_shortcode_org_unit_contact_info = new PublicShortcodeOrgUnitContactInfo( 'pstu_org_unit_contacts_info', $this->get_plugin_name(), $this->get_version() );
+		$this->loader->add_shortcode( $part_public_shortcode_org_unit_contact_info->get_name(), $part_public_shortcode_org_unit_contact_info, 'manager' );
+
+		$part_public_shortcode_org_unit_contact_info = new PublicShortcodePersonContactInfo( 'pstu_person_contacts_info', $this->get_plugin_name(), $this->get_version() );
+		$this->loader->add_shortcode( $part_public_shortcode_org_unit_contact_info->get_name(), $part_public_shortcode_org_unit_contact_info, 'manager' );
 	}
 
 

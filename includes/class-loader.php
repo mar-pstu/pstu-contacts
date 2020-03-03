@@ -153,6 +153,7 @@ class Loader {
 
 		foreach ( $this->shortcodes as $hook ) {
 			add_shortcode( $hook[ 'hook' ], array( $hook[ 'component' ], $hook[ 'callback' ] ) );
+			add_shortcode( mb_strtoupper( $hook[ 'hook' ] ), array( $hook[ 'component' ], $hook[ 'callback' ] ) );
 		}
 
 	}

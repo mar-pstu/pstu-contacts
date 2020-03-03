@@ -1,4 +1,29 @@
-/**
- * All of the CSS for your public-facing functionality should be
- * included in this file.
- */
+.person-entry.person-entry--card a {
+	display: block;
+	text-decoration: none;
+}
+
+.person-entry.person-entry--card a:hover {
+	text-decoration: none;
+}
+
+.person-entry.person-entry--bar {
+	margin-top: 2em;
+	margin-bottom: 2em;
+}
+
+.person-entry.person-entry--item {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.org-unit-entry .org-unit-title,
+.person-entry .person-entry-title {
+	margin: 0;
+}
+
+.org-unit-entry .org-unit-excerpt,
+.person-entry .person-entry-excerpt {
+	margin: 0;
+	font-size: 85%;
+}

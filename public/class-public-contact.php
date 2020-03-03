@@ -90,12 +90,12 @@ class PublicContact extends Part {
 				}
 			}
 			if ( ! empty( $content ) ) {
+				$header = ( ( bool ) $header_tag ) ? sprintf( '<%1$s>%2$s</%1$s>', $header_tag, $section->title ) : '';
 				printf(
-					'<section id="post-%1$s-%2$s" class="%2$s"> <%3$s> %4$s </%3$s> <ul>%5$s</ul> </section>',
+					'<section id="post-%1$s-%2$s" class="%2$s"> %3$s <ul>%4$s</ul> </section>',
 					$post_id,
 					$key,
-					$header_tag,
-					$section->title,
+					$header,
 					$content
 				);
 			}
