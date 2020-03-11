@@ -24,7 +24,7 @@ class PublicShortcodeContact extends Shortcode {
 		$atts = shortcode_atts( array(
 			'id'                => false,
 			'contact_template'  => 'card',
-		), $atts, $this->shortcode_name );
+		), $atts, $this->get_shortcode_name() );
 		if ( $atts[ 'id' ] ) {
 			$contact = get_post( $atts[ 'id' ], OBJECT, 'raw' );
 			if ( is_object( $contact ) && ! is_wp_error( $contact ) ) {

@@ -150,7 +150,9 @@ class Manager {
 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-shortcode-org_unit-contacts-info.php';
 
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-shortcode-person-contact-info.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-shortcode-contacts-catalog.php';
+
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-shortcode-org_units-catalog.php';
 
 		$this->loader = new Loader();
 
@@ -216,6 +218,7 @@ class Manager {
 		$part_settings_page = new AdminGutenberg( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'init', $part_settings_page, 'register_blocks', 10, 0 );
 		$this->loader->add_action( 'enqueue_block_assets', $part_settings_page, 'enqueue_block_assets', 10, 0 );
+
 	}
 
 
@@ -244,22 +247,25 @@ class Manager {
 		$this->loader->add_filter( 'template_include', $part_public_org_units, 'archive_template_include', 10, 1 );
 		
 		$part_public_shortcode_org_unit = new PublicShortcodeOrgUnit( 'pstu_org_unit', $this->get_plugin_name(), $this->get_version() );
-		$this->loader->add_shortcode( $part_public_shortcode_org_unit->get_name(), $part_public_shortcode_org_unit, 'manager' );
+		$this->loader->add_shortcode( $part_public_shortcode_org_unit->get_shortcode_name(), $part_public_shortcode_org_unit, 'manager' );
 		
 		$part_public_shortcode_leader = new PublicShortcodeOrgUnitLeader( 'pstu_org_unit_leader', $this->get_plugin_name(), $this->get_version() );
-		$this->loader->add_shortcode( $part_public_shortcode_leader->get_name(), $part_public_shortcode_leader, 'manager' );
+		$this->loader->add_shortcode( $part_public_shortcode_leader->get_shortcode_name(), $part_public_shortcode_leader, 'manager' );
 		
 		$part_public_shortcode_contact = new PublicShortcodeContact( 'pstu_contact', $this->get_plugin_name(), $this->get_version() );
-		$this->loader->add_shortcode( $part_public_shortcode_contact->get_name(), $part_public_shortcode_contact, 'manager' );
+		$this->loader->add_shortcode( $part_public_shortcode_contact->get_shortcode_name(), $part_public_shortcode_contact, 'manager' );
 		
 		$part_public_shortcode_org_unit_description = new PublicShortcodeOrgUnitDescription( 'pstu_org_unit_description', $this->get_plugin_name(), $this->get_version() );
-		$this->loader->add_shortcode( $part_public_shortcode_org_unit_description->get_name(), $part_public_shortcode_org_unit_description, 'manager' );
+		$this->loader->add_shortcode( $part_public_shortcode_org_unit_description->get_shortcode_name(), $part_public_shortcode_org_unit_description, 'manager' );
 
-		$part_public_shortcode_org_unit_contact_info = new PublicShortcodeOrgUnitContactInfo( 'pstu_org_unit_contacts_info', $this->get_plugin_name(), $this->get_version() );
-		$this->loader->add_shortcode( $part_public_shortcode_org_unit_contact_info->get_name(), $part_public_shortcode_org_unit_contact_info, 'manager' );
+		$part_public_shortcode_org_unit_contact_info = new PublicShortcodeOrgUnitContactInfo( 'pstu_person_contacts_info', $this->get_plugin_name(), $this->get_version() );
+		$this->loader->add_shortcode( $part_public_shortcode_org_unit_contact_info->get_shortcode_name(), $part_public_shortcode_org_unit_contact_info, 'manager' );
 
-		$part_public_shortcode_org_unit_contact_info = new PublicShortcodePersonContactInfo( 'pstu_person_contacts_info', $this->get_plugin_name(), $this->get_version() );
-		$this->loader->add_shortcode( $part_public_shortcode_org_unit_contact_info->get_name(), $part_public_shortcode_org_unit_contact_info, 'manager' );
+		$part_public_shortcode_contacts_catalog = new PublicShortcodeaContactsCatalog( 'contacts_catalog', $this->get_plugin_name(), $this->get_version() );
+		$this->loader->add_shortcode( $part_public_shortcode_contacts_catalog->get_shortcode_name(), $part_public_shortcode_contacts_catalog, 'manager' );
+
+		$part_public_shortcode_org_units_catalog = new PublicShortcodeaOrgUnitsCatalog( 'org_units_catalog', $this->get_plugin_name(), $this->get_version() );
+		$this->loader->add_shortcode( $part_public_shortcode_org_units_catalog->get_shortcode_name(), $part_public_shortcode_org_units_catalog, 'manager' );
 	}
 
 

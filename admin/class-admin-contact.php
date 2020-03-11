@@ -179,7 +179,7 @@ class AdminContact extends Part {
 				update_post_meta( $post_id, "{$this->plugin_name}_foto", $foto );
 			}
 		}
-		foreach ( $this->meta_sections as $section ) {
+		foreach ( apply_filters( 'pstu_contacts_get_meta_sections', 'contact' ) as $section ) {
 			$meta_value = array();
 			foreach ( $section->get_fields() as &$field ) {
 				if ( isset( $_REQUEST[ $section->get_key() ][ $field->get_key() ] ) ) {

@@ -16,8 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {	exit; };
  * @subpackage Pstu_contacts/public
  * @author     chomovva <chomovva@gmail.com>
  */
-class PublicShortcodeOrgUnit extends SHortcode {
-
+class PublicShortcodeOrgUnit extends Shortcode {
 
 
 	public function manager( $atts ) {

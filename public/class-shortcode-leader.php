@@ -23,7 +23,7 @@ class PublicShortcodeOrgUnitLeader extends Shortcode {
 		$html = '';
 		$atts = shortcode_atts( array(
 			'id'                => false,
-		), $atts, $this->shortcode_name );
+		), $atts, $this->get_shortcode_name() );
 		$general_information = get_term_meta( $atts[ 'id' ], 'general_information', true );
 		if ( isset( $general_information[ 'leader_id' ] ) && ! empty( $general_information[ 'leader_id' ] ) ) {
 			$leader = get_post( $general_information[ 'leader_id' ], OBJECT, 'raw' );

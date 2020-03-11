@@ -31,7 +31,7 @@ abstract class Shortcode extends Part {
 	}
 
 
-	public function get_name() {
+	public function get_shortcode_name() {
 		return $this->shortcode_name;
 	}
 

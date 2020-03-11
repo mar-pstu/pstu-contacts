@@ -1,12 +1,11 @@
 ( function( blocks, editor, i18n, element, components, _ ) {
+
 	var el              = element.createElement,
 		InnerBlocks     = editor.InnerBlocks,
 		SelectControl   = wp.components.SelectControl,
 		CheckboxControl = wp.components.CheckboxControl,
 		RichText        = editor.RichText,
 		plugin_name     = 'pstu_contacts';
-
-	// var terms = get_terms();
 
 	function httpGetSync( theUrl, callback ) {
 		var xmlHttp = new XMLHttpRequest();
@@ -20,7 +19,7 @@
 
 	function get_terms() {
 		var terms = [
-			{ value: '-1', label: i18n.__( 'Все категории', 'pstu-faq' ) },
+			{ value: '-1', label: i18n.__( 'Не выбрано', plugin_name ) },
 		];
 		httpGetSync( rest_url + 'wp/v2/org_units', function( answer ) {
 			JSON.parse( answer ).forEach( function( term, index ) {
@@ -33,7 +32,6 @@
 		return terms;
 	}
 
-
 	function set_shortcode( props, id, leader, contact_template ) {
 		var leader_str = ( leader ) ? '1' : '0';
 		var shortcode = '[pstu_org_unit id="' + id + '" leader="' + leader_str +'" contact_template="' + contact_template + '" ]';
@@ -42,7 +40,7 @@
 
 	blocks.registerBlockType( 'pstu-contacts/org-unit', {
 		title: i18n.__( 'Подразделение', plugin_name ),
-		description: i18n.__( 'PSTU Текстовый блок аналог Boootstrap блока "well".', plugin_name ),
+		description: i18n.__( 'Список контактов подразделения.', plugin_name ),
 		keywords: [
 			i18n.__( 'ПГТУ', plugin_name ),
 			i18n.__( 'контакты', plugin_name ),

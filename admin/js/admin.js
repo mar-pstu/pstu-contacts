@@ -14,8 +14,6 @@
 				$figure = $container.find( '.foto-figure' ),
 				default_image = $container.attr( 'data-default' );
 
-			console.log( $container );
-
 			function check_default() {
 				var value = $control.val();
 				if ( value.trim().length > 0 ) {

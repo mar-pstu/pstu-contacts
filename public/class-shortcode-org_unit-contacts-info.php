@@ -18,12 +18,11 @@ if ( ! defined( 'ABSPATH' ) ) {	exit; };
 class PublicShortcodeOrgUnitContactInfo extends Shortcode {
 
 
-
 	public function manager( $atts ) {
 		$html = '';
 		$atts = shortcode_atts( array(
 			'id' => false,
-		), $atts, $this->shortcode_name );
+		), $atts, $this->get_shortcode_name() );
 		if ( ( bool ) $atts[ 'id' ] ) {
 			$html = PublicOrgUnits::render_meta_section( $atts[ 'id' ], 'contacts', false );
 			if ( ! empty( $html ) ) {

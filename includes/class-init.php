@@ -72,7 +72,7 @@ class Init {
 			'show_in_menu'        => true,
 			'show_in_admin_bar'   => true,
 			'show_in_nav_menus'   => null,
-			'show_in_rest'        => null,
+			'show_in_rest'        => false,
 			'rest_base'           => null,
 			'menu_position'       => '6.67',
 			'menu_icon'           => 'dashicons-groups',
