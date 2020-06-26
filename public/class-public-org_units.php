@@ -24,7 +24,7 @@ class PublicOrgUnits extends Part {
 		if ( is_tax( 'org_units' ) ) {
 			$template = get_theme_file_path( 'taxonomy-org_units.php' );
 			if ( ( bool ) $template ) {
-				$template = dirname( __FILE__ ) . '\partials\taxonomy-org_units.php';
+				$template = dirname( __FILE__ ) . '/partials/taxonomy-org_units.php';
 			}
 		}
 		return apply_filters( 'org_units_archive_template_include', $template );

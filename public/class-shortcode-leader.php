@@ -30,7 +30,7 @@ class PublicShortcodeOrgUnitLeader extends Shortcode {
 			if ( is_object( $leader ) && ! is_wp_error( $leader ) ) {
 				setup_postdata( $post = $leader );
 				ob_start();
-				include dirname( __FILE__ ) . "\partials\person-bar.php";
+				include dirname( __FILE__ ) . "/partials/person-bar.php";
 				$html = '<div class="row">' . ob_get_contents() . '</div>';
 				ob_end_clean();
 				wp_reset_postdata();

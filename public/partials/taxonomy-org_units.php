@@ -87,7 +87,7 @@ $leader = get_post( $general_information[ 'leader_id' ], OBJECT, 'raw' );
 			while ( have_posts() ) {
 				the_post();
 				if ( get_the_ID() != $general_information[ 'leader_id' ] ) {
-					include dirname( __FILE__ ) . '\contact-bar.php';
+					include dirname( __FILE__ ) . '/person-bar.php';
 				}
 			}
 		}

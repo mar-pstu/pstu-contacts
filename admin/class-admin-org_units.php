@@ -50,10 +50,10 @@ class AdminOrgUnits extends Part {
 		// сохранение порядка сортировки контактов в подразделении
 		$contacts = get_posts( array(
 			'numberposts' => -1,
-			'orderby'     => array(
-				'meta_value_num' => 'ACS',
-				'post_title'     => 'ACS',
-			),
+			// 'orderby'     => array(
+				// 'meta_value_num' => 'ASC',
+				// 'post_title'     => 'ASC',
+			// ),
 			'post_type'   => 'contact',
 			'meta_key'    => "org_units_{$term_id}_order",
 		) );
@@ -110,7 +110,7 @@ class AdminOrgUnits extends Part {
 	 * @param    string    $taxonomy_slug   Идентификатор таксономии
 	 */
 	public function add_taxonomy_fields( $taxonomy_slug ) {
-		$this->render_default_sections( false, dirname( __FILE__ ) . '\partials\settings-section.php', dirname( __FILE__ ) . '\partials\org_units-add-section-field.php' );
+		$this->render_default_sections( false, dirname( __FILE__ ) . '/partials/settings-section.php', dirname( __FILE__ ) . '/partials/org_units-add-section-field.php' );
 	}
 
 
@@ -123,7 +123,7 @@ class AdminOrgUnits extends Part {
 	 * @param    string    $taxonomy         Идентификатор таксономии
 	 */
 	public function edit_taxonomy_fields( $term, $taxonomy ) {
-		$this->render_default_sections( $term->term_id, dirname( __FILE__ ) . '\partials\org_units-edit-settings-section.php', dirname( __FILE__ ) . '\partials\org_units-edit-section-field.php' );
+		$this->render_default_sections( $term->term_id, dirname( __FILE__ ) . '/partials/org_units-edit-settings-section.php', dirname( __FILE__ ) . '/partials/org_units-edit-section-field.php' );
 		// секция сортировок, появляется только при редактировании подразделения
 		ob_start();
 		$label = __( 'Сортировка контактов в подразделении', $this->plugin_name );
@@ -136,15 +136,24 @@ class AdminOrgUnits extends Part {
 			),
 			'post_type'   => 'contact',
 			'meta_query'  => array(
-				'relation'  => 'AND',
-				'meta_exists_clause' => array(
-					'key'      => "org_units_{$term->term_id}_order",
-					'compare'  => 'EXISTS',
-				),
-				'meta_value_clause' => array(
-					'key'      => "org_units_{$term->term_id}_order",
-					'type'     => 'numeric',
-				),
+				'relation'  => 'OR',
+				[
+					'meta_exists_clause' => array(
+						'key'      => "org_units_{$term->term_id}_order",
+						'compare'  => 'NOT EXISTS',
+					),
+				],
+				[
+					'relation'  => 'AND',
+					'meta_exists_clause' => array(
+						'key'      => "org_units_{$term->term_id}_order",
+						'compare'  => 'EXISTS',
+					),
+					'meta_value_clause' => array(
+						'key'      => "org_units_{$term->term_id}_order",
+						'type'     => 'numeric',
+					),
+				],
 			),
 			'tax_query'   => array(
 				'relation'  => 'AND',
@@ -159,13 +168,13 @@ class AdminOrgUnits extends Part {
 		if ( empty( $control ) ) {
 			$control = __( 'Контакты не добавлены в подразделение', $this->plugin_name );
 		}
-		include dirname( __FILE__ ) . '\partials\org_units-edit-section-field.php';
+		include dirname( __FILE__ ) . '/partials/org_units-edit-section-field.php';
 		$title = '';
 		$key = $this->plugin_name . '_orders';
 		$content = ob_get_contents();
 		ob_end_clean();
 		wp_add_inline_script( 'jquery-ui-sortable', "jQuery( document ).ready( function () { jQuery( '#{$id}' ).sortable(); } );", 'after' );
-		include dirname( __FILE__ ) . '\partials\org_units-edit-settings-section.php';
+		include dirname( __FILE__ ) . '/partials/org_units-edit-settings-section.php';
 	}
 
 

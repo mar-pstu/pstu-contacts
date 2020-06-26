@@ -96,62 +96,44 @@ class Manager {
 	private function load_dependencies() {
 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/trait-helpers.php';
-
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/trait-controls.php';
-
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/abstract-part.php';
-
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/abstract-shortcode.php';
-
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-field.php';
-
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-settings-section.php';
-
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-init.php';		
 
 		/**
-		 * The class responsible for orchestrating the actions and filters of the
-		 * core plugin.
+		 * Класс для запуска хукув, фильтров и шорткодов
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-loader.php';
 
 		/**
-		 * The class responsible for defining internationalization functionality
-		 * of the plugin.
+		 * Класс локализации плагина
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-i18n.php';
 
 		/**
-		 * The class responsible for defining all actions that occur in the admin area.
+		 * Классы, которые отвечают за админку
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-admin-settings-page.php';
-
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/abstruct-admin-part.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-admin-settings-manager.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-admin-update.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-admin-org_units.php';
-		
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-admin-contact.php';
-
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-admin-gutenberg.php';
 
 		/**
-		 * The class responsible for defining all actions that occur in the public-facing
-		 * side of the site.
+		 * Классы, которые отвечают за публичную часть сайта
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-public-contact.php';
-
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-public-org_units.php';
-
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-shortcode-org_unit.php';
-
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-shortcode-leader.php';
-
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-shortcode-contact.php';
-
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-shortcode-org_unit-description.php';
-
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-shortcode-org_unit-contacts-info.php';
-
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-shortcode-contacts-catalog.php';
-
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-shortcode-org_units-catalog.php';
 
 		$this->loader = new Loader();
@@ -184,7 +166,13 @@ class Manager {
 		$plugin_register_objects = new Init( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'init', $plugin_register_objects, 'register_post_types' );
 		$this->loader->add_action( 'init', $plugin_register_objects, 'register_taxonomies' );
-		$this->loader->add_filter( 'pstu_contacts_get_meta_sections', $plugin_register_objects, 'get_meta_sections', 10, 1 );
+		$this->loader->add_filter( $this->get_plugin_name() . '_get_meta_sections', $plugin_register_objects, 'get_meta_sections', 10, 1 );
+		$update_tab_class = new AdminUpdateTab( $this->get_plugin_name(), $this->get_version() );
+		$this->loader->add_action( 'init', $update_tab_class, 'check_update', 10, 0 );
+		$this->loader->add_filter( $this->get_plugin_name() . '_settings-tabs', $update_tab_class, 'add_settings_tab', 10, 1 );
+		$this->loader->add_action( $this->get_plugin_name() . '_settings-form_' . $update_tab_class->get_tab_name(), $update_tab_class, 'render_tab', 10, 1 );
+		$this->loader->add_action( $this->get_plugin_name() . '_settings-ajax_' . $update_tab_class->get_tab_name(), $update_tab_class, 'run_ajax', 10, 0 );
+		$this->loader->add_action( 'get_header', $update_tab_class, 'enable_maintenance_mode', 10, 0 );
 	}
 
 
@@ -196,6 +184,16 @@ class Manager {
 	 * @access   private
 	 */
 	private function define_admin_hooks() {
+
+		$update_tab_class = new AdminUpdateTab( $this->get_plugin_name(), $this->get_version() );
+		$this->loader->add_action( 'admin_enqueue_scripts', $update_tab_class, 'enqueue_scripts', 10, 0 );
+
+		// страница настроек плагина
+		$settings_manager_class = new AdminSettingsManager( $this->get_plugin_name(), $this->get_version() );
+		$this->loader->add_action( 'admin_menu', $settings_manager_class, 'add_page' );
+		$this->loader->add_action( 'current_screen', $settings_manager_class, 'run_tab' );
+		$this->loader->add_action( 'admin_init', $settings_manager_class, 'register_settings', 10, 0 );
+		$this->loader->add_action( 'wp_ajax_' . $this->get_plugin_name() . '_settings', $settings_manager_class, 'run_ajax', 10, 0 );
 		
 		$part_admin_org_units = new AdminOrgUnits( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'create_org_units', $part_admin_org_units, 'save_taxonomy_meta' );
@@ -210,10 +208,6 @@ class Manager {
 		$this->loader->add_action( 'save_post', $part_admin_contact, 'save_post', 10, 1 );
 		$this->loader->add_action( 'admin_enqueue_scripts', $part_admin_contact, 'enqueue_styles', 10, 0 );
 		$this->loader->add_action( 'admin_enqueue_scripts', $part_admin_contact, 'enqueue_scripts', 10, 0 );
-		
-		$part_settings_page = new SettingsPage( $this->get_plugin_name(), $this->get_version() );
-		$this->loader->add_action( 'admin_menu', $part_settings_page, 'add_page', 10, 0 );
-		$this->loader->add_action( 'admin_init', $part_settings_page, 'register_settings', 10, 0 );
 		
 		$part_settings_page = new AdminGutenberg( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'init', $part_settings_page, 'register_blocks', 10, 0 );
@@ -234,14 +228,14 @@ class Manager {
 		$part_public_contact = new PublicContact( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'wp_enqueue_scripts', $part_public_contact, 'enqueue_styles', 10, 0 );
 		$this->loader->add_action( 'wp_enqueue_scripts', $part_public_contact, 'enqueue_scripts', 10, 0 );
-		$this->loader->add_action( 'pstu_contacts_single_profil_foto', $part_public_contact, 'the_contact_profil_foto', 10, 1 );
-		$this->loader->add_action( 'pstu_contacts_the_single_contact_info', $part_public_contact, 'render_meta_section', 10, 3 );
+		$this->loader->add_action( $this->get_plugin_name() . '_single_profil_foto', $part_public_contact, 'the_contact_profil_foto', 10, 1 );
+		$this->loader->add_action( $this->get_plugin_name() . '_the_single_contact_info', $part_public_contact, 'render_meta_section', 10, 3 );
 		$this->loader->add_filter( 'the_content', $part_public_contact, 'render_single_content', 10, 1 );
 		
 		$part_public_org_units = new PublicOrgUnits( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'wp_enqueue_scripts', $part_public_org_units, 'enqueue_styles', 10, 0 );
 		$this->loader->add_action( 'wp_enqueue_scripts', $part_public_org_units, 'enqueue_scripts', 10, 0 );
-		$this->loader->add_action( 'pre_get_posts', $part_public_org_units, 'change_order', 10, 1 );
+		// $this->loader->add_action( 'pre_get_posts', $part_public_org_units, 'change_order', 10, 1 );
 		$this->loader->add_action( 'pstu_contacts_the_single_org_units_info', $part_public_org_units, 'render_meta_section', 10, 3 );
 		$this->loader->add_action( 'pstu_contact_profil_foto', $part_public_contact, 'the_contact_profil_foto', 10, 1 );
 		$this->loader->add_filter( 'template_include', $part_public_org_units, 'archive_template_include', 10, 1 );
@@ -285,7 +279,7 @@ class Manager {
 	 * строки перевода и при сохранении некоторых настроек.
 	 *
 	 * @since     2.0.0
-	 * @return    string    The name of the plugin.
+	 * @return    string    Идентификатор плагина
 	 */
 	public function get_plugin_name() {
 		return $this->plugin_name;

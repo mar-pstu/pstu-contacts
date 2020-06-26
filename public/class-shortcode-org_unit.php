@@ -43,18 +43,26 @@ class PublicShortcodeOrgUnit extends Shortcode {
 					'meta_exists_clause' => 'ASC',
 					'meta_value_clause'  => 'DESC',
 				),
-				'post_type'   => 'contact',
-				'meta_query'  => array(
-					'relation'  => 'AND',
-					'meta_exists_clause' => array(
-						'key'      => "org_units_{$atts[ 'id' ]}_order",
-						'compare'  => 'EXISTS',
-					),
-					'meta_value_clause' => array(
-						'key'      => "org_units_{$atts[ 'id' ]}_order",
-						'type'     => 'numeric',
-					),
-				),
+				'meta_query'  => [
+					'relation'  => 'OR',
+					[
+						'meta_exists_clause' => array(
+							'key'      => "org_units_{$atts[ 'id' ]}_order",
+							'compare'  => 'NOT EXISTS',
+						),
+					],
+					[
+						'relation'  => 'AND',
+						'meta_exists_clause' => array(
+							'key'      => "org_units_{$atts[ 'id' ]}_order",
+							'compare'  => 'EXISTS',
+						),
+						'meta_value_clause' => array(
+							'key'      => "org_units_{$atts[ 'id' ]}_order",
+							'type'     => 'numeric',
+						),
+					],
+				],
 				'tax_query'   => array(
 					'relation'  => 'AND',
 					array(
@@ -69,7 +77,7 @@ class PublicShortcodeOrgUnit extends Shortcode {
 				ob_start();
 				foreach ( $contacts as $post ) {
 					setup_postdata( $post );
-					include dirname( __FILE__ ) . "\partials\person-{$atts[ 'contact_template' ]}.php";
+					include dirname( __FILE__ ) . "/partials/person-{$atts[ 'contact_template' ]}.php";
 				}
 				wp_reset_postdata();
 				$html = ob_get_contents();
@@ -81,7 +89,7 @@ class PublicShortcodeOrgUnit extends Shortcode {
 				if ( is_object( $leader ) && ! is_wp_error( $leader ) ) {
 					ob_start();
 					setup_postdata( $post = $leader );
-					include dirname( __FILE__ ) . "\partials\person-bar.php";
+					include dirname( __FILE__ ) . "/partials/person-bar.php";
 					wp_reset_postdata();
 					$html = '<div class="row"><p class="lead"><b>' . __( 'Руководитель', $this->plugin_name ) . '</b></p>' . ob_get_contents() . '</div><p class="lead font-bold">' . __( 'Коллектив', $this->plugin_name ) . '</p>' . $html;
 					ob_end_clean();

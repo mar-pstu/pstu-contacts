@@ -60,8 +60,8 @@ function deactivate_pstu_contacts() {
 	Deactivator::deactivate();
 }
 
-register_activation_hook( __FILE__, 'activate_pstu_contacts' );
-register_deactivation_hook( __FILE__, 'deactivate_pstu_contacts' );
+register_activation_hook( __FILE__, 'pstu_contacts\activate_pstu_contacts' );
+register_deactivation_hook( __FILE__, 'pstu_contacts\deactivate_pstu_contacts' );
 
 /**
  * The core plugin class that is used to define internationalization,

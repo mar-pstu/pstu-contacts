@@ -78,13 +78,13 @@ class AdminContact extends Part {
 						'id'       => $id,
 					) );
 				}
-				include dirname( __FILE__ ) . '\partials\contact-section-field.php';
+				include dirname( __FILE__ ) . '/partials/contact-section-field.php';
 			}
 			$content = ob_get_contents();
 			ob_end_clean();
 			$title = $section->title;
 			$key = $section->get_key();
-			include dirname( __FILE__ ) . '\partials\settings-section.php';
+			include dirname( __FILE__ ) . '/partials/settings-section.php';
 		}
 	}
 

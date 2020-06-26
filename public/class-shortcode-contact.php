@@ -33,7 +33,7 @@ class PublicShortcodeContact extends Shortcode {
 				}
 				setup_postdata( $post = $contact );
 				ob_start();
-				include dirname( __FILE__ ) . "\partials\person-{$atts[ 'contact_template' ]}.php";
+				include dirname( __FILE__ ) . "/partials/person-{$atts[ 'contact_template' ]}.php";
 				$html = '<div class="row">' . ob_get_contents() . '</div>';
 				ob_end_clean();
 				wp_reset_postdata();

@@ -20,7 +20,7 @@ class PublicContact extends Part {
 	public function render_single_content( $content ) {
 		if ( 'contact' == get_post_type( get_the_ID() ) ) {
 			ob_start();
-			include dirname( __FILE__ ) . '\partials\single-contact.php';
+			include dirname( __FILE__ ) . '/partials/single-contact.php';
 			$content = ob_get_contents();
 			ob_end_clean();
 		}
