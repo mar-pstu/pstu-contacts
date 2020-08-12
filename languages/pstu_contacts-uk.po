@@ -1,0 +1,501 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2020-08-12 10:31+0300\n"
+"PO-Revision-Date: 2020-08-12 10:41+0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: uk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.4.1\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+"X-Poedit-KeywordsList: _e;__;esc_attr__;esc_attr_e\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: admin/class-admin-contact.php:38
+msgid "Свойства контакта"
+msgstr ""
+
+#: admin/class-admin-org_units.php:129
+msgid "Сортировка контактов в подразделении"
+msgstr ""
+
+#: admin/class-admin-org_units.php:169 admin/class-admin-org_units.php:227
+msgid "Контакты не добавлены в подразделение"
+msgstr ""
+
+#: admin/class-admin-org_units.php:212
+msgid "Страницы не созданиы"
+msgstr ""
+
+#: admin/class-admin-settings-manager.php:36
+msgid "Настройки плагина \"Контакти\""
+msgstr "Налаштування плагіну \"Контакти\""
+
+#: admin/class-admin-settings-manager.php:37
+msgid "Настройки"
+msgstr ""
+
+#: admin/class-admin-update.php:48
+msgid "Обновление"
+msgstr ""
+
+#: admin/class-admin-update.php:62
+msgid ""
+"Невозможно определить версию базы данных. Возможно при установке плагина "
+"произошка ошибка. Если плагин установлен поверх версии 1.0.0, то сделайте "
+"резервную копию и запустите обновление, активируей плагин заново."
+msgstr ""
+
+#: admin/class-admin-update.php:64
+msgid ""
+"Установлена устаревшая версия плагина. Сделайте резервную копию и обновитесь."
+msgstr ""
+
+#: admin/class-admin-update.php:66
+msgid ""
+"Плагин запущен с устаревшей версией базы данных. Для корректной работы "
+"необходимо обновить базу данных. Сделайте резервную копию и нажмите кнопку "
+"\"Запустить обновление\"."
+msgstr ""
+
+#: admin/class-admin-update.php:99
+#, php-format
+msgid "Версия плагина: %s"
+msgstr ""
+
+#: admin/class-admin-update.php:100
+#, php-format
+msgid "Версия базы данных: %s"
+msgstr ""
+
+#: admin/class-admin-update.php:100
+msgid "не определена"
+msgstr ""
+
+#: admin/class-admin-update.php:105
+msgid ""
+"Версия плагина совпадает с версией базы данных. Дополнительные действия не "
+"требуются."
+msgstr ""
+
+#: admin/class-admin-update.php:115
+msgid "Запустить обновление"
+msgstr ""
+
+#: admin/class-admin-update.php:177
+#, php-format
+msgid "<p>Обновлено %s контактов из %s</p>"
+msgstr ""
+
+#: admin/class-admin-update.php:179
+msgid "Ошибка обновления контактов!"
+msgstr ""
+
+#: admin/class-admin-update.php:183
+msgid "Контакты обновлены!"
+msgstr "Контакти оновлені!"
+
+#: admin/class-admin-update.php:199
+#, php-format
+msgid "<p>Обновлено %s подразделений из %s</p>"
+msgstr ""
+
+#: admin/class-admin-update.php:201
+msgid "Ошибка обновления подразделений!"
+msgstr "Помилка оновлення підрозділів!"
+
+#: admin/class-admin-update.php:204
+msgid "Список подразделений обновлён!"
+msgstr "Список підрозділів оновлений!"
+
+#: admin/class-admin-update.php:210
+msgid "Обновление завершено! Перезагрузка ..."
+msgstr "Оновлення завершено! Перезавантаження ..."
+
+#: admin/class-admin-update.php:303
+msgid "Сайт закрыт на обслуживание"
+msgstr "Сайт на стадії технічного обслуговування"
+
+#: admin/class-admin-update.php:304
+msgid "Обновите страницу через несколько минут"
+msgstr "Перезавантажте сторінку через кілька хвилин"
+
+#: admin/js/contacts-catalog.js:15
+msgid "Список контактов"
+msgstr "Список контактів"
+
+#: admin/js/contacts-catalog.js:17 admin/js/org-unit-contact-info.js:48
+#: admin/js/org-unit-description.js:48 admin/js/org-unit-leader.js:46
+#: admin/js/org-unit.js:45 admin/js/org-units-catalog.js:12
+#: admin/js/single-contact.js:46
+msgid "ПГТУ"
+msgstr "ПДТУ"
+
+#: admin/js/contacts-catalog.js:18 admin/js/org-unit-contact-info.js:49
+#: admin/js/org-unit-contact-info.js:52 admin/js/org-unit-description.js:49
+#: admin/js/org-unit-leader.js:47 admin/js/org-unit.js:46
+#: admin/js/org-units-catalog.js:13
+msgid "контакты"
+msgstr "контакти"
+
+#: admin/js/contacts-catalog.js:19 admin/js/org-unit-leader.js:49
+#: admin/js/org-unit.js:48 admin/js/org-units-catalog.js:15
+msgid "список"
+msgstr "список"
+
+#: admin/js/contacts-catalog.js:48 admin/js/org-unit-contact-info.js:83
+#: admin/js/org-unit-description.js:82 admin/js/org-unit-leader.js:86
+#: admin/js/org-unit.js:88 admin/js/single-contact.js:83
+msgid "Параметры шорткода"
+msgstr "Параметри шорткода"
+
+#: admin/js/contacts-catalog.js:52
+msgid "Уровень заголовка"
+msgstr "Рівень заголовка"
+
+#: admin/js/contacts-catalog.js:58
+msgid "H2"
+msgstr "H2"
+
+#: admin/js/contacts-catalog.js:63
+msgid "H3"
+msgstr "H3"
+
+#: admin/js/contacts-catalog.js:68
+msgid "H4"
+msgstr "H4"
+
+#: admin/js/contacts-catalog.js:73
+msgid "H5"
+msgstr "H5"
+
+#: admin/js/org-unit-contact-info.js:23 admin/js/org-unit-description.js:23
+#: admin/js/org-unit-leader.js:22 admin/js/org-unit.js:22
+#: admin/js/single-contact.js:23
+msgid "Не выбрано"
+msgstr "Не обрано"
+
+#: admin/js/org-unit-contact-info.js:45
+msgid "Контактная информация подразделения"
+msgstr ""
+
+#: admin/js/org-unit-contact-info.js:50 admin/js/org-unit-description.js:50
+#: admin/js/org-unit-leader.js:48 admin/js/org-unit.js:47
+#: admin/js/org-units-catalog.js:14
+msgid "подразделение"
+msgstr ""
+
+#: admin/js/org-unit-contact-info.js:51 admin/js/org-unit-description.js:51
+msgid "описание"
+msgstr ""
+
+#: admin/js/org-unit-contact-info.js:87 admin/js/org-unit-description.js:86
+msgid "Название подразделения"
+msgstr ""
+
+#: admin/js/org-unit-contact-info.js:100 admin/js/org-unit-description.js:100
+#: admin/js/org-unit-leader.js:125 admin/js/org-unit.js:136
+msgid "Выберите подразделение"
+msgstr ""
+
+#: admin/js/org-unit-description.js:45
+msgid "Краткое описание подразделения"
+msgstr ""
+
+#: admin/js/org-unit-leader.js:43 includes/class-init.php:183
+msgid "Руководитель подразделения"
+msgstr ""
+
+#: admin/js/org-unit-leader.js:44 admin/js/org-unit.js:43
+msgid "Список контактов подразделения."
+msgstr ""
+
+#: admin/js/org-unit-leader.js:50 admin/js/org-unit.js:49
+msgid "сотрудники"
+msgstr ""
+
+#: admin/js/org-unit-leader.js:51
+msgid "руководитель"
+msgstr ""
+
+#: admin/js/org-unit-leader.js:90 admin/js/org-unit-leader.js:99
+#: admin/js/org-unit.js:92 admin/js/org-unit.js:110
+#: admin/js/single-contact.js:96
+msgid "Название категории"
+msgstr ""
+
+#: admin/js/org-unit-leader.js:103 admin/js/org-unit.js:114
+#: admin/js/single-contact.js:100
+msgid "карточка"
+msgstr ""
+
+#: admin/js/org-unit-leader.js:107 admin/js/org-unit.js:118
+#: admin/js/single-contact.js:104
+msgid "линия"
+msgstr ""
+
+#: admin/js/org-unit-leader.js:111 admin/js/org-unit.js:122
+#: admin/js/single-contact.js:108
+msgid "минимум информации"
+msgstr ""
+
+#: admin/js/org-unit.js:42 includes/class-init.php:99
+msgid "Подразделение"
+msgstr ""
+
+#: admin/js/org-unit.js:101
+msgid "Показывать руководителя"
+msgstr ""
+
+#: admin/js/org-unit.js:102
+msgid "руководитель выводится перед списком сотрудников"
+msgstr ""
+
+#: admin/js/org-units-catalog.js:10
+msgid "Список подрзделений"
+msgstr ""
+
+#: admin/js/single-contact.js:43 includes/class-init.php:55
+msgid "Контакт"
+msgstr ""
+
+#: admin/js/single-contact.js:44
+msgid "Одиночный контакт."
+msgstr ""
+
+#: admin/js/single-contact.js:47
+msgid "контакт"
+msgstr ""
+
+#: admin/js/single-contact.js:48
+msgid "сотрудник"
+msgstr ""
+
+#: admin/js/single-contact.js:87
+msgid "Имя сотрудника"
+msgstr ""
+
+#: admin/js/single-contact.js:122
+msgid "Выберите сорудника"
+msgstr ""
+
+#: includes/class-init.php:54 includes/class-init.php:65
+msgid "Контакты"
+msgstr "Контакти"
+
+#: includes/class-init.php:56
+msgid "Добавить контакт"
+msgstr ""
+
+#: includes/class-init.php:57
+msgid "Добавить новый контакт"
+msgstr ""
+
+#: includes/class-init.php:58
+msgid "Редактировать контакт"
+msgstr ""
+
+#: includes/class-init.php:59
+msgid "Новый контакт"
+msgstr ""
+
+#: includes/class-init.php:60
+msgid "Смотреть контакт"
+msgstr ""
+
+#: includes/class-init.php:61
+msgid "Искать контакт"
+msgstr ""
+
+#: includes/class-init.php:62
+msgid "Не найдено"
+msgstr ""
+
+#: includes/class-init.php:63
+msgid "Не в корзине не найдено"
+msgstr ""
+
+#: includes/class-init.php:98 includes/class-init.php:109
+msgid "Подразделения"
+msgstr "Підрозділи"
+
+#: includes/class-init.php:100
+msgid "Найти запись"
+msgstr ""
+
+#: includes/class-init.php:101
+msgid "Все записи"
+msgstr ""
+
+#: includes/class-init.php:102
+msgid "Просмотреть запись"
+msgstr ""
+
+#: includes/class-init.php:103 includes/class-init.php:104
+msgid "Родительская запись"
+msgstr ""
+
+#: includes/class-init.php:105
+msgid "Редактировать запись"
+msgstr ""
+
+#: includes/class-init.php:106
+msgid "Обновить запись"
+msgstr ""
+
+#: includes/class-init.php:107
+msgid "Добавить новое подразделение"
+msgstr ""
+
+#: includes/class-init.php:108
+msgid "Новое подразделение"
+msgstr ""
+
+#: includes/class-init.php:140
+msgid "Фото"
+msgstr "Фото"
+
+#: includes/class-init.php:141
+msgid "Фото профиля"
+msgstr "Фото профіля"
+
+#: includes/class-init.php:143
+msgid "Наукометрика"
+msgstr "Наукометріка"
+
+#: includes/class-init.php:144
+msgid "ORCID iD"
+msgstr "Google Schola"
+
+#: includes/class-init.php:145
+msgid "Google Schola"
+msgstr "Google Schola"
+
+#: includes/class-init.php:146
+msgid "Researcher iD"
+msgstr "Researcher iD"
+
+#: includes/class-init.php:147
+msgid "Scopus iD"
+msgstr "Scopus iD"
+
+#: includes/class-init.php:148
+msgid "ResearchGate iD"
+msgstr "ResearchGate iD"
+
+#: includes/class-init.php:149
+msgid "Электронный репозитoрий НТБ ПГТУ"
+msgstr "Електронний репозітoрій НТБ ПДТУ"
+
+#: includes/class-init.php:151 includes/class-init.php:186
+msgid "Контактная информация"
+msgstr "Контактна інформація"
+
+#: includes/class-init.php:152 includes/class-init.php:187
+msgid "Электронная почта"
+msgstr "Електронна пошта"
+
+#: includes/class-init.php:153 includes/class-init.php:188
+msgid "Телефон"
+msgstr "Телефон"
+
+#: includes/class-init.php:154 includes/class-init.php:189
+msgid "Адрес"
+msgstr "Адреса"
+
+#: includes/class-init.php:155 includes/class-init.php:190
+msgid "Время работы"
+msgstr "Час роботи"
+
+#: includes/class-init.php:156
+msgid "График приёма"
+msgstr "Графік прийому"
+
+#: includes/class-init.php:158 includes/class-init.php:192
+msgid "Профили социальных сетей"
+msgstr "Профілі соціальних мереж"
+
+#: includes/class-init.php:159
+msgid "Google Plus"
+msgstr "Google Plus"
+
+#: includes/class-init.php:160 includes/class-init.php:193
+msgid "Facebook"
+msgstr "Facebook"
+
+#: includes/class-init.php:161 includes/class-init.php:194
+msgid "Twitter"
+msgstr "Twitter"
+
+#: includes/class-init.php:162 includes/class-init.php:195
+msgid "LinkedIn"
+msgstr "LinkedIn"
+
+#: includes/class-init.php:163 includes/class-init.php:196
+msgid "YouTube"
+msgstr "YouTube"
+
+#: includes/class-init.php:164 includes/class-init.php:197
+msgid "Instagram"
+msgstr "Instagram"
+
+#: includes/class-init.php:166 includes/class-init.php:199
+msgid "WEB"
+msgstr "WEB"
+
+#: includes/class-init.php:167 includes/class-init.php:200
+msgid "Wikipedia"
+msgstr "Wikipedia"
+
+#: includes/class-init.php:182
+msgid "Общая информация"
+msgstr "Загальна інформація"
+
+#: includes/class-init.php:184
+msgid "Страница с описанием"
+msgstr "Сторінка з описом"
+
+#: includes/trait-controls.php:87
+msgid "Перетаскивайте пункты с помощью мыши"
+msgstr ""
+
+#: includes/trait-controls.php:111
+msgid "Выбор фото"
+msgstr ""
+
+#: includes/trait-controls.php:112
+msgid "Удалить фото"
+msgstr ""
+
+#: public/class-shortcode-org_unit.php:94
+msgid "Руководитель"
+msgstr "Керівник"
+
+#: public/class-shortcode-org_unit.php:94
+msgid "Коллектив"
+msgstr "Колектив"
+
+#: public/partials/person-bar.php:28
+msgid "Подробней"
+msgstr "Докладніше"
+
+#: public/partials/single-contact.php:32
+msgid "Подразделения: "
+msgstr "Підрозділ: "
+
+#: public/partials/taxonomy-org_units.php:45
+msgid "Страница с подробной информацией о работе подразделения"
+msgstr "Сторінка з детальною інформацією про роботу підрозділу"
+
+#: public/partials/taxonomy-org_units.php:67
+msgid "Дочерние подразделения"
+msgstr "Дочірні підрозділи"
+
+#: public/partials/taxonomy-org_units.php:85
+msgid "Сотрудники подразделения"
+msgstr "Співробітники підрозділу"

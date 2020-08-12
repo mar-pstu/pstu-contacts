@@ -33,7 +33,7 @@ class AdminSettingsManager extends AdminPart {
 	public function add_page() {
 		add_submenu_page(
 			'edit.php?post_type=contact',
-			__( 'Настройки плагина "Конкурс "Энергетика"', $this->plugin_name ),
+			__( 'Настройки плагина "Контакти"', $this->plugin_name ),
 			__( 'Настройки', $this->plugin_name ),
 			'manage_options',
 			$this->page_slug,
