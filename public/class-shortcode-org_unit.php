@@ -91,7 +91,7 @@ class PublicShortcodeOrgUnit extends Shortcode {
 					setup_postdata( $post = $leader );
 					include dirname( __FILE__ ) . "/partials/person-bar.php";
 					wp_reset_postdata();
-					$html = '<div class="row"><p class="lead"><b>' . __( 'Руководитель', $this->plugin_name ) . '</b></p>' . ob_get_contents() . '</div><p class="lead font-bold">' . __( 'Коллектив', $this->plugin_name ) . '</p>' . $html;
+					$html = '<p class="lead"><b>' . __( 'Руководитель', $this->plugin_name ) . '</b></p>' . ob_get_contents() . '<p class="lead font-bold">' . __( 'Коллектив', $this->plugin_name ) . '</p>' . $html;
 					ob_end_clean();
 				}
 			}
