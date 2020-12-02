@@ -142,7 +142,7 @@ class Init {
 			) ),
 			new SettingsSection( 'scientometrics', __( 'Наукометрика', $this->plugin_name ), array(
 				new Field( 'orcid_id', __( 'ORCID iD', $this->plugin_name ), '', false ),
-				new Field( 'google_scholar', __( 'Google Schola', $this->plugin_name ), '', false ),
+				new Field( 'google_scholar', __( 'Google Scholar', $this->plugin_name ), '', false ),
 				new Field( 'researcher_id', __( 'Researcher iD', $this->plugin_name ), '', false ),
 				new Field( 'scopus_id', __( 'Scopus iD', $this->plugin_name ), '', false ),
 				new Field( 'research_gate_id', __( 'ResearchGate iD', $this->plugin_name ), '', false ),

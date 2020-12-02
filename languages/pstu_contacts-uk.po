@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2020-08-12 10:31+0300\n"
-"PO-Revision-Date: 2020-08-12 10:41+0300\n"
+"POT-Creation-Date: 2020-12-02 10:05+0200\n"
+"PO-Revision-Date: 2020-12-02 10:05+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: uk\n"
@@ -33,7 +33,9 @@ msgid "Страницы не созданиы"
 msgstr ""
 
 #: admin/class-admin-settings-manager.php:36
-msgid "Настройки плагина \"Контакти\""
+#, fuzzy
+#| msgid "Настройки плагина \"Контакти\""
+msgid "Настройки плагина \"Конкурс \"Энергетика\""
 msgstr "Налаштування плагіну \"Контакти\""
 
 #: admin/class-admin-settings-manager.php:37
@@ -370,11 +372,11 @@ msgstr "Наукометріка"
 
 #: includes/class-init.php:144
 msgid "ORCID iD"
-msgstr "Google Schola"
+msgstr "ORCID iD"
 
 #: includes/class-init.php:145
-msgid "Google Schola"
-msgstr "Google Schola"
+msgid "Google Scholar"
+msgstr "Google Scholar"
 
 #: includes/class-init.php:146
 msgid "Researcher iD"
@@ -472,13 +474,13 @@ msgstr ""
 msgid "Удалить фото"
 msgstr ""
 
-#: public/class-shortcode-org_unit.php:94
-msgid "Руководитель"
-msgstr "Керівник"
-
-#: public/class-shortcode-org_unit.php:94
+#: public/class-shortcode-org_unit.php:87
 msgid "Коллектив"
 msgstr "Колектив"
+
+#: public/class-shortcode-org_unit.php:97
+msgid "Руководитель"
+msgstr "Керівник"
 
 #: public/partials/person-bar.php:28
 msgid "Подробней"
