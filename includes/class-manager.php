@@ -228,7 +228,7 @@ class Manager {
 		$part_public_contact = new PublicContact( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'wp_enqueue_scripts', $part_public_contact, 'enqueue_styles', 10, 0 );
 		$this->loader->add_action( 'wp_enqueue_scripts', $part_public_contact, 'enqueue_scripts', 10, 0 );
-		$this->loader->add_action( $this->get_plugin_name() . '_single_profil_foto', $part_public_contact, 'the_contact_profil_foto', 10, 1 );
+		$this->loader->add_action( $this->get_plugin_name() . '_single_profil_foto', $part_public_contact, 'the_contact_profil_foto', 10, 2 );
 		$this->loader->add_action( $this->get_plugin_name() . '_the_single_contact_info', $part_public_contact, 'render_meta_section', 10, 3 );
 		$this->loader->add_filter( 'the_content', $part_public_contact, 'render_single_content', 10, 1 );
 		

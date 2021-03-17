@@ -27,6 +27,7 @@ class PublicShortcodeOrgUnit extends Shortcode {
 			'leader'            => 1,
 			'contact_template'  => 'card',
 			'contact_list'      => true,
+			'include_children'  => true,
 		), $atts, $this->shortcode_name );
 		if ( ! in_array( $atts[ 'contact_template' ], array( 'card', 'bar', 'item' ) ) ) {
 			$atts[ 'contact_template' ] = 'card';
@@ -72,6 +73,7 @@ class PublicShortcodeOrgUnit extends Shortcode {
 							'field'     => 'term_id',
 							'terms'	    => $org_unit->term_id,
 							'operator'  => 'IN',
+							'include_children' => $atts[ 'include_children' ],
 						),
 					),
 				) );

@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {	exit; };
 	<article  id="post-<?php the_ID(); ?>" <?php post_class( 'person-entry person-entry--bar', get_the_ID() ); ?> role="listitem">
 		<div class="row middle-xs">
 			<div class="col-xs-12 col-sm-3 col-md-4">
-				<?php do_action( 'pstu_contacts_single_profil_foto', get_the_ID() ); ?>
+				<?php do_action( 'pstu_contacts_single_profil_foto', get_the_ID(), true ); ?>
 			</div>
 			<div class="col-xs-12 col-sm-9 col-md-8">
 				<h4 class="person-entry-title">

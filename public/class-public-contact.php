@@ -63,18 +63,19 @@ class PublicContact extends Part {
 	}
 
 
-	public function get_contact_profil_foto( $post_id ) {
+	public function get_contact_profil_foto( $post_id, $single = false ) {
 		return sprintf(
-			'<figure><img class="contact-profil-foto" src="%1$s" alt="%2$s"><figcaption>%2$s%3$s</figcaption></figure>',
+			'<figure><img class="contact-profil-foto" src="%1$s" alt="%2$s"><figcaption class="%4$s">%2$s%3$s</figcaption></figure>',
 			$this->get_contact_profil_foto_url( $post_id ),
 			esc_attr( get_the_title( $post_id ) ),
-			( has_excerpt( $post_id ) ) ? '<br><small>' . get_the_excerpt( $post_id ) . '</small>' : ''
+			( has_excerpt( $post_id ) ) ? '<br><small>' . get_the_excerpt( $post_id ) . '</small>' : '',
+			( $single ) ? 'hide' : ''
 		);
 	}
 
 
-	public function the_contact_profil_foto( $post_id ) {
-		echo $this->get_contact_profil_foto( $post_id );
+	public function the_contact_profil_foto( $post_id, $single = false ) {
+		echo $this->get_contact_profil_foto( $post_id, $single );
 	}
 
 
