@@ -86,7 +86,7 @@ class PublicShortcodeOrgUnit extends Shortcode {
 					wp_reset_postdata();
 					$html = ob_get_contents();
 					ob_end_clean();
-					$html = '<p class="lead font-bold">' . __( 'Коллектив', $this->plugin_name ) . '</p><div class="row">' . $html . '</div>';
+					$html = '<div class="row">' . $html . '</div>';
 				}
 			}
 			if ( ( bool ) $atts[ 'leader' ] ) {
@@ -96,7 +96,7 @@ class PublicShortcodeOrgUnit extends Shortcode {
 					setup_postdata( $post = $leader );
 					include dirname( __FILE__ ) . "/partials/person-bar.php";
 					wp_reset_postdata();
-					$html = '<p class="lead"><b>' . __( 'Руководитель', $this->plugin_name ) . '</b></p>' . ob_get_contents() . $html;
+					$html = ob_get_contents() . $html;
 					ob_end_clean();
 				}
 			}

@@ -162,6 +162,7 @@ class AdminOrgUnits extends Part {
 					'field'    => 'term_id',
 					'terms'    => $term->term_id,
 					'operator' => 'IN',
+					'include_children' => false,
 				),
 			),
 		) ), array( 'id' => $id ) );
