@@ -196,8 +196,8 @@ class Manager {
 		$this->loader->add_action( 'wp_ajax_' . $this->get_plugin_name() . '_settings', $settings_manager_class, 'run_ajax', 10, 0 );
 		
 		$part_admin_org_units = new AdminOrgUnits( $this->get_plugin_name(), $this->get_version() );
-		$this->loader->add_action( 'create_org_units', $part_admin_org_units, 'save_taxonomy_meta' );
-		$this->loader->add_action( 'edited_org_units', $part_admin_org_units, 'save_taxonomy_meta' );
+		$this->loader->add_action( 'create_org_units', $part_admin_org_units, 'save_taxonomy_meta', 10, 1 );
+		$this->loader->add_action( 'edited_org_units', $part_admin_org_units, 'save_taxonomy_meta', 10, 1 );
 		$this->loader->add_action( 'org_units_add_form_fields', $part_admin_org_units, 'add_taxonomy_fields' );
 		$this->loader->add_action( 'org_units_edit_form_fields', $part_admin_org_units, 'edit_taxonomy_fields', 10, 2 );
 		$this->loader->add_action( 'admin_enqueue_scripts', $part_admin_org_units, 'enqueue_styles', 10, 0 );

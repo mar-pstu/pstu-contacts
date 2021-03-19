@@ -30,6 +30,8 @@ class AdminOrgUnits extends Part {
 	 * @param    int      $term_id         Идентификатор термина
 	 */
 	public function save_taxonomy_meta( $term_id ) {
+		if ( ! isset( $_POST['custom_field'] ) ) return;
+		if ( ! current_user_can( 'edit_term', $term_id ) ) return;
 		// сохранение стандартных секций настроек
 		foreach ( apply_filters( 'pstu_contacts_get_meta_sections', 'org_units' ) as $section ) {
 			$meta_value = array();
@@ -47,26 +49,12 @@ class AdminOrgUnits extends Part {
 				update_term_meta( $term_id, $section->get_key(), $meta_value );
 			}
 		}
-		// сохранение порядка сортировки контактов в подразделении
-		$contacts = get_posts( array(
-			'numberposts' => -1,
-			// 'orderby'     => array(
-				// 'meta_value_num' => 'ASC',
-				// 'post_title'     => 'ASC',
-			// ),
-			'post_type'   => 'contact',
-			'meta_key'    => "org_units_{$term_id}_order",
-		) );
-		if ( is_array( $contacts ) && ! empty( $contacts ) ) {
-			foreach ( $contacts as $contact ) {
-				delete_post_meta( $contact->ID, "org_units_{$term_id}_order" );
-			}
-		}
+		delete_metadata( 'post', '', "org_units_{$term_id}_order", '', true );
 		if ( isset( $_POST[ $this->plugin_name . '_contacts_order' ] ) ) {
 			$order = wp_parse_id_list( $_POST[ $this->plugin_name . '_contacts_order' ] );
-			update_term_meta( $term_id, 'order_contacts', $order );
+			// update_term_meta( $term_id, 'order_contacts', $order );
 			for ( $i = 0; $i < count( $order ); $i++ ) { 
-				update_post_meta( $order[ $i ], "org_units_{$term_id}_order", ( $i + 1 ) );
+				update_post_meta( $order[ $i ], "org_units_{$term_id}_order", str_pad( ( $i + 1 ), 3, '0', STR_PAD_LEFT ) );
 			}
 		}
 	}
@@ -130,10 +118,6 @@ class AdminOrgUnits extends Part {
 		$id = $this->plugin_name . '_contacts_order';
 		$control = $this->render_order_control( $id, get_posts( array(
 			'numberposts' => -1,
-			'orderby'     => array(
-				'meta_exists_clause' => 'ASC',
-				'meta_value_clause'  => 'DESC',
-			),
 			'post_type'   => 'contact',
 			'meta_query'  => array(
 				'relation'  => 'OR',
@@ -151,7 +135,7 @@ class AdminOrgUnits extends Part {
 					),
 					'meta_value_clause' => array(
 						'key'      => "org_units_{$term->term_id}_order",
-						'type'     => 'numeric',
+						'type'     => 'NUMERIC',
 					),
 				],
 			),
@@ -164,6 +148,10 @@ class AdminOrgUnits extends Part {
 					'operator' => 'IN',
 					'include_children' => false,
 				),
+			),
+			'orderby'     => array(
+				'meta_exists_clause' => 'ASC',
+				'meta_value_clause'  => 'DESC',
 			),
 		) ), array( 'id' => $id ) );
 		if ( empty( $control ) ) {

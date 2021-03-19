@@ -76,7 +76,7 @@ trait Controls {
 				$choices = wp_list_pluck( $choices, 'post_title', 'ID' );
 			}
 			foreach ( $choices as $value => $label ) {
-				$output[] = sprintf( '<li class="order-item"><input name="%1$s[]" type="hidden" value="%2$s">%3$s</li>', $name, $value, $label );
+				$output[] = sprintf( '<li class="order-item"><input name="%1$s[]" type="hidden" value="%2$s">%3$s %4$s</li>', $name, $value, $label, get_post_meta( $value, 'org_units_2749_order', true ) );
 			}
 		}
 		$html = ( empty( $output ) ) ? '' : sprintf(
