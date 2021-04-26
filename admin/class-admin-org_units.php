@@ -30,8 +30,8 @@ class AdminOrgUnits extends Part {
 	 * @param    int      $term_id         Идентификатор термина
 	 */
 	public function save_taxonomy_meta( $term_id ) {
-		if ( ! isset( $_POST['custom_field'] ) ) return;
 		if ( ! current_user_can( 'edit_term', $term_id ) ) return;
+		if ( ! wp_verify_nonce( $_POST['_wpnonce'], "update-tag_{$term_id}" ) && ! wp_verify_nonce( $_POST[ '_wpnonce_add-tag' ], 'add-tag' ) ) return;
 		// сохранение стандартных секций настроек
 		foreach ( apply_filters( 'pstu_contacts_get_meta_sections', 'org_units' ) as $section ) {
 			$meta_value = array();

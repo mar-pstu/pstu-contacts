@@ -65,7 +65,7 @@ class PublicContact extends Part {
 
 	public function get_contact_profil_foto( $post_id, $single = false ) {
 		return sprintf(
-			'<figure><img class="contact-profil-foto" src="%1$s" alt="%2$s"><figcaption class="%4$s">%2$s%3$s</figcaption></figure>',
+			'<figure class="ml-0 mr-0"><img class="contact-profil-foto" src="%1$s" alt="%2$s"><figcaption class="%4$s">%2$s%3$s</figcaption></figure>',
 			$this->get_contact_profil_foto_url( $post_id ),
 			esc_attr( get_the_title( $post_id ) ),
 			( has_excerpt( $post_id ) ) ? '<br><small>' . get_the_excerpt( $post_id ) . '</small>' : '',
